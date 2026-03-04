@@ -201,6 +201,5 @@ def main() -> int:
 
 	return run_inventory(args.ip, args.port, args.timeout, args.antennas, args.duration)
 
-
 if __name__ == "__main__":
 	sys.exit(main())
