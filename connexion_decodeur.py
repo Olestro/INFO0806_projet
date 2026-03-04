@@ -71,6 +71,21 @@ def extract_epc(tag: dict) -> str:
 		return str(tag["EPC"])
 	return "EPC_INCONNU"
 
+def on_tag_report(_reader, tags, antennas):
+	if isinstance(tags, dict):
+		tags = [tags]
+	if not isinstance(tags, list):
+		return
+
+	for tag in tags:
+		if not isinstance(tag, dict):
+			continue
+		epc = extract_epc(tag)
+		rssi = tag.get("PeakRSSI", "?")
+		ant_id = tag.get("AntennaID", antennas[0])
+		seen = tag.get("TagSeenCount", 1)
+		now = datetime.now().strftime("%H:%M:%S")
+		print(f"[{now}] EPC={epc} | RSSI={rssi} | ANT={ant_id} | Seen={seen}")
 
 def run_inventory(
 	ip: str,
@@ -97,22 +112,6 @@ def run_inventory(
 	print(f"Connexion LLRP a {ip}:{port} (antennes={','.join(str(a) for a in antennas)})...")
 	print("Lecture des tags en cours (Ctrl+C pour arrrter).")
 
-	def on_tag_report(_reader, tags):
-		if isinstance(tags, dict):
-			tags = [tags]
-		if not isinstance(tags, list):
-			return
-
-		for tag in tags:
-			if not isinstance(tag, dict):
-				continue
-			epc = extract_epc(tag)
-			rssi = tag.get("PeakRSSI", "?")
-			ant_id = tag.get("AntennaID", antennas[0])
-			seen = tag.get("TagSeenCount", 1)
-			now = datetime.now().strftime("%H:%M:%S")
-			print(f"[{now}] EPC={epc} | RSSI={rssi} | ANT={ant_id} | Seen={seen}")
-
 	disconnected = Event()
 
 	def on_disconnected(_reader):
@@ -130,7 +129,7 @@ def run_inventory(
 	)
 
 	client = LLRPReaderClient(ip, port=port, config=config, timeout=timeout)
-	client.add_tag_report_callback(on_tag_report)
+	client.add_tag_report_callback(on_tag_report, antennas=antennas)
 	client.add_disconnected_callback(on_disconnected)
 
 	try:
@@ -156,8 +155,7 @@ def run_inventory(
 
 def build_parser() -> argparse.ArgumentParser:
 	parser = argparse.ArgumentParser(
-		description="Lit les tags RFID en direct depuis un lecteur Impinj R220 (LLRP)."
-	)
+		description="Lit les tags RFID en direct depuis un lecteur Impinj R220 (LLRP).")
 	parser.add_argument("--ip", default=DEFAULT_IP, help="Adresse IPv4 du lecteur")
 	parser.add_argument("--port", type=int, default=DEFAULT_PORT, help="Port TCP (LLRP: 5084)")
 	parser.add_argument(
