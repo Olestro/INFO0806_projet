@@ -29,16 +29,16 @@ DEFAULT_ANTENNAS = [1, 2]
 
 def parse_antennas(value: str) -> list[int]:
 	"""Parse une liste d'antennes au format '1,2,3'."""
-	parts = [part.strip() for part in value.split(",") if part.strip()]
-	if not parts:
+	params = [part.strip() for part in value.split(",") if part.strip()]
+	if not params:
 		raise argparse.ArgumentTypeError("Aucune antenne fournie.")
 
 	antennas: list[int] = []
-	for part in parts:
+	for num_antenne in params:
 		try:
-			antenna = int(part)
+			antenna = int(num_antenne)
 		except ValueError as exc:
-			raise argparse.ArgumentTypeError(f"Antenne invalide: {part}") from exc
+			raise argparse.ArgumentTypeError(f"Antenne invalide: {num_antenne}") from exc
 
 		if antenna <= 0:
 			raise argparse.ArgumentTypeError(f"Antenne invalide: {antenna}")
@@ -49,7 +49,7 @@ def parse_antennas(value: str) -> list[int]:
 	return antennas
 
 
-def validate_ipv4(ip: str) -> Optional[str]:
+def addresse_ipv4_valide(ip: str) -> Optional[str]:
 	"""Valide une adresse IPv4. Retourne un message d'erreur si invalide."""
 	try:
 		ipaddress.IPv4Address(ip)
@@ -71,7 +71,7 @@ def extract_epc(tag: dict) -> str:
 		return str(tag["EPC"])
 	return "EPC_INCONNU"
 
-def on_tag_report(_reader, tags, antennas):
+def on_tag_report(_reader, tags, antennas, affiche_antennes=False):
 	if isinstance(tags, dict):
 		tags = [tags]
 	if not isinstance(tags, list):
@@ -85,7 +85,8 @@ def on_tag_report(_reader, tags, antennas):
 		ant_id = tag.get("AntennaID", antennas[0])
 		seen = tag.get("TagSeenCount", 1)
 		now = datetime.now().strftime("%H:%M:%S")
-		print(f"[{now}] EPC={epc} | RSSI={rssi} | ANT={ant_id} | Seen={seen}")
+		if affiche_antennes:
+			print(f"[{now}] EPC={epc} | RSSI={rssi} | ANT={ant_id} | Seen={seen}")
 
 def run_inventory(
 	ip: str,
@@ -93,8 +94,8 @@ def run_inventory(
 	timeout: float,
 	antennas: list[int],
 	duration: int,
-) -> int:
-	error = validate_ipv4(ip)
+	afficher_antennes: bool = False) -> int:
+	error = addresse_ipv4_valide(ip)
 	if error:
 		print(f"[ERREUR] {error}")
 		return 2
@@ -176,6 +177,11 @@ def build_parser() -> argparse.ArgumentParser:
 		default=0,
 		help="Duree en secondes (0 = infini)",
 	)
+	parser.add_argument(
+		"--afficher-antennes",
+		action="store_true",
+		help="Afficher les antennes dans les rapports de tags",
+	)
 	return parser
 
 
@@ -198,9 +204,13 @@ def main() -> int:
 	if args.duration < 0:
 		print(f"[ERREUR] Duree invalide: {args.duration}")
 		return 2
+	
+	if args.afficher_antennes:
+		print("Affichage des antennes actif.")
+	else :
+		print("Affichage des antennes inactif.")
 
-	return run_inventory(args.ip, args.port, args.timeout, args.antennas, args.duration)
+	return run_inventory(args.ip, args.port, args.timeout, args.antennas, args.duration, afficher_antennes=args.afficher_antennes)
 
 if __name__ == "__main__":
 	sys.exit(main())
-	#test
