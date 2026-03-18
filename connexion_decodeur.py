@@ -291,8 +291,11 @@ def run_inventory(ip: str, port: int, timeout: float, antennas: list[int],
 	)
 
 	client = LLRPReaderClient(ip, port=port, config=config, timeout=timeout)
-	client.add_tag_report_callback(on_tag_report, antennas=antennas,
-	                               affiche_antennes=afficher_antennes)
+
+	def tag_report_callback(reader, tags):
+		on_tag_report(reader, tags, antennas, afficher_antennes)
+
+	client.add_tag_report_callback(tag_report_callback)
 	client.add_disconnected_callback(on_disconnected)
 
 	try:
