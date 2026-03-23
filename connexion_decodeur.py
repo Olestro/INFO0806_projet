@@ -31,7 +31,8 @@ TAGS_FILE = SCRIPT_DIR / "tags.json"
 CONFIG_FILE = SCRIPT_DIR / "config.json"
 
 # ── Valeurs par défaut ────────────────────────────────────────────────
-DEFAULT_IP = "169.254.1.1"
+# DEFAULT_IP = "169.254.1.1"
+DEFAULT_IP = "10.42.0.15"
 DEFAULT_PORT = 5084  # Port LLRP standard (lecteurs Impinj)
 DEFAULT_TIMEOUT = 5.0
 DEFAULT_ANTENNAS = [1, 2]
@@ -77,7 +78,6 @@ def parse_antennas(value: str) -> list[int]:
 
 		if antenna not in antennas:
 			antennas.append(antenna)
-
 	return antennas
 
 
@@ -194,7 +194,7 @@ def lister_presets() -> None:
 #  Stockage des tags lus
 # =====================================================================
 
-def enregistrer_tag(epc: str, rssi, ant_id: int, seen: int) -> None:
+def enregistrer_tag(epc: str, rssi, ant_id: int, seen: int, reader_timestamp=None) -> None:
 	"""Ajoute un tag lu dans tags.json."""
 	data = load_json(TAGS_FILE)
 	if "tags" not in data:
@@ -204,7 +204,8 @@ def enregistrer_tag(epc: str, rssi, ant_id: int, seen: int) -> None:
 		"rssi": rssi,
 		"antenna": ant_id,
 		"seen_count": seen,
-		"timestamp": datetime.now().isoformat(),
+		"reader_timestamp": reader_timestamp,
+		"client_timestamp": datetime.now().isoformat(),
 	})
 	save_json(TAGS_FILE, data)
 
@@ -237,12 +238,25 @@ def on_tag_report(_reader, tags, antennas, affiche_antennes=False):
 		rssi = tag.get("PeakRSSI", "?")
 		ant_id = tag.get("AntennaID", antennas[0])
 		seen = tag.get("TagSeenCount", 1)
-		now = datetime.now().strftime("%H:%M:%S")
+		
+		# Récupérer le timestamp du lecteur (format: secondes*1e6 + microsecondes)
+		reader_timestamp = tag.get("LastSeenTimestampUTC") or tag.get("FirstSeenTimestampUTC") or tag.get("Timestamp")
+		print(f"[{reader_timestamp}] EPC={epc} | RSSI={rssi} | ANT={ant_id} | Seen={seen}")
+		if reader_timestamp and isinstance(reader_timestamp, (int, float)):
+			try:
+				# Diviser par 1e6 pour obtenir les secondes (format Impinj: secondes*1e6 + µs)
+				ts_seconds = int(reader_timestamp) // 1000000
+				# convertit automatiquement l'heure du lecteur impinj en heure locale et formate l'affichage
+				ts_str = datetime.fromtimestamp(ts_seconds).strftime("%H:%M:%S.%f")[:-3]
+			except (ValueError, OSError, OverflowError):
+				ts_str = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+		else:
+			ts_str = datetime.now().strftime("%H:%M:%S.%f")[:-3]
 
 		# Stockage dans le fichier JSON
-		enregistrer_tag(epc, rssi, ant_id, seen)
-
-		print(f"[{now}] EPC={epc} | RSSI={rssi} | ANT={ant_id} | Seen={seen}")
+		enregistrer_tag(epc, rssi, ant_id, seen, reader_timestamp)
+		
+		print(f"[{ts_str}] EPC={epc} | RSSI={rssi} | ANT={ant_id} | Seen={seen}")
 
 
 # =====================================================================
@@ -287,6 +301,10 @@ def run_inventory(ip: str, port: int, timeout: float, antennas: list[int],
 			"duration": None if duration == 0 else duration,
 			"reconnect": False,
 			"disconnect_when_done": False if duration == 0 else True,
+			'EnablePeakRSSI': True,
+			'EnableFirstSeenTimestamp': True,
+			'EnableLastSeenTimestamp': True,
+			'EnableTagSeenCount': True
 		}
 	)
 
