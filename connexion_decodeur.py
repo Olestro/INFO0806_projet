@@ -32,7 +32,7 @@ CONFIG_FILE = SCRIPT_DIR / "config.json"
 
 # ── Valeurs par défaut ────────────────────────────────────────────────
 # DEFAULT_IP = "169.254.1.1"
-DEFAULT_IP = "10.42.0.15"
+DEFAULT_IP = "169.254.1.1"
 DEFAULT_PORT = 5084  # Port LLRP standard (lecteurs Impinj)
 DEFAULT_TIMEOUT = 5.0
 DEFAULT_ANTENNAS = [1, 2]

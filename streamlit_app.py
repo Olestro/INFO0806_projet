@@ -96,13 +96,13 @@ def page_accueil():
             with col_g1:
                 global_tx_power = st.slider(
                     "Tx Power Global (dBm) :",
-                    min_value=0, max_value=33, value=30,
+                    min_value=0.0, max_value=31.5, value=31.5, step=0.5,
                     key="global_tx"
                 )
             with col_g2:
                 global_rx_sensitivity = st.slider(
                     "Rx Sensitivity Global (dBm) :",
-                    min_value=-100, max_value=0, value=-60,
+                    min_value=-100.0, max_value=0.0, value=-80.0, step=0.5,
                     key="global_rx"
                 )
         
@@ -125,13 +125,13 @@ def page_accueil():
                     with col_a1:
                         tx = st.slider(
                             f"Tx Power :",
-                            min_value=0, max_value=33, value=30,
+                            min_value=0.0, max_value=31.5, value=global_tx_power, step=0.5,
                             key=f"ant_{ant}_tx"
                         )
                     with col_a2:
                         rx = st.slider(
                             f"Rx Sensitivity :",
-                            min_value=-100, max_value=0, value=-60,
+                            min_value=-100.0, max_value=0.0, value=global_rx_sensitivity, step=0.5,
                             key=f"ant_{ant}_rx"
                         )
                     
