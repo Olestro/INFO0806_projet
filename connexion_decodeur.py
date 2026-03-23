@@ -283,10 +283,18 @@ def run_inventory(ip: str, port: int, timeout: float, antennas: list[int],
 		{
 			"start_inventory": True,
 			"report_every_n_tags": 1,
+			"tag_content_selector": {
+				"EnableAntennaID": True,
+				"EnablePeakRSSI": True,
+				"EnableTagSeenCount": True,
+			},
 			"antennas": antennas,
 			"duration": None if duration == 0 else duration,
 			"reconnect": False,
 			"disconnect_when_done": False if duration == 0 else True,
+			"EnableFirstSeenTimestamp": True,
+			"EnableLastSeenTimestamp": True,
+			"EnableTagSeenCount": True,
 		}
 	)
 

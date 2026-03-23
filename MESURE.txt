@@ -1,0 +1,29 @@
+21 pieds 
+
+30 db Rx -80
+
+zebra 14 pieds alligné
+
+invellion : 20 pieds full alligné
+
+
+
+25 db Rx -80
+
+zebra 13 pieds alligné
+
+invellion : 13 pieds full alligné
+
+
+31.5 db Rx -80
+
+zebra 13 pieds alligné
+
+invellion : 39 pieds full alligné
+
+
+MESURE PUISSANCE PIEDS
+corps à travers :
+0 : -45
+5 : -64
+10 : -74
