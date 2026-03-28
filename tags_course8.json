@@ -1,0 +1,2860 @@
+{
+  "tags": [
+    {
+      "epc": "b'e2004703914064269d7b0114'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:00.417059"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:01.286931"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:01.664774"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:01.986682"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -71,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:02.356418"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:02.653791"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -71,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:03.531189"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:03.928040"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -68,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:05.594133"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:05.745607"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:05.852336"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:06.103765"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:06.228684"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:06.361930"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:06.480315"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:06.628921"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:06.746242"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:07.003887"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:07.112939"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:07.262090"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:07.379634"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:07.511032"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:07.628956"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:07.886934"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:08.006947"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:08.143119"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:08.261772"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:08.394558"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:08.513670"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:08.785325"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:08.894500"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:09.026709"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:09.144460"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:09.293551"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:09.410784"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:09.573988"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:09.695176"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -66,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:09.936216"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:10.043696"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -71,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:10.191960"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -66,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:10.357937"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -66,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:10.555566"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -71,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:10.675869"
+    },
+    {
+      "epc": "b'000000000000000000002660'",
+      "rssi": -77,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:10.857179"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -71,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:10.991655"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -65,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:11.283216"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -71,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:11.533494"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -71,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:11.644146"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -71,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:11.824636"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -71,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:11.944059"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -72,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:12.200047"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -72,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:12.321178"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -71,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:12.456966"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -72,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:12.575884"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -71,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:12.740351"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -71,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:12.860357"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -71,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:13.022962"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:13.125096"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -65,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:13.447031"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:13.559041"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:13.707552"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:13.825206"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:13.958323"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:14.075763"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:14.206974"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:14.326133"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:14.474250"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:14.593493"
+    },
+    {
+      "epc": "b'000000000000000000002654'",
+      "rssi": -77,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:14.895438"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:15.038976"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -68,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:15.283281"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -66,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:15.469034"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:15.589538"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:15.723568"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:15.872718"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:15.990411"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:16.123775"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:16.241223"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:16.499956"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:16.607770"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:16.758006"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:16.873158"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -66,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:17.069372"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:17.189073"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -67,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:17.399833"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:17.522230"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -66,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:17.828452"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:17.940504"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:18.090108"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:18.206861"
+    },
+    {
+      "epc": "b'000000000000000000002660'",
+      "rssi": -75,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:18.323992"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -68,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:18.517770"
+    },
+    {
+      "epc": "b'000000000000000000002658'",
+      "rssi": -74,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:18.655237"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -72,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:18.773378"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -71,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:18.928174"
+    },
+    {
+      "epc": "b'000000000000000000002658'",
+      "rssi": -65,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:19.055390"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:19.250727"
+    },
+    {
+      "epc": "b'000000000000000000002658'",
+      "rssi": -65,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:19.372528"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -71,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:19.522711"
+    },
+    {
+      "epc": "b'000000000000000000002654'",
+      "rssi": -61,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:19.640381"
+    },
+    {
+      "epc": "b'30395dfa82ec8c0000268cda'",
+      "rssi": -63,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:19.756210"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -72,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:19.904992"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:20.022517"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -74,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:20.171070"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -72,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:20.288315"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:20.484302"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:20.777607"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:21.086120"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:21.371878"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:21.552697"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -74,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:21.670907"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:21.835474"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -74,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:22.205234"
+    },
+    {
+      "epc": "b'e2004703914064269d7b0114'",
+      "rssi": -73,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:22.633640"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -61,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:23.772651"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -61,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:23.964553"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -58,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:24.133407"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:24.252995"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -68,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:24.387457"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:24.721963"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -74,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:24.946127"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -78,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:25.178480"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -81,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:25.871894"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -80,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:26.096414"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -81,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:26.358998"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -81,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:26.468347"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -80,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:26.728204"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -80,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:26.834563"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -79,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:27.077770"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -80,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:27.311734"
+    },
+    {
+      "epc": "b'e2004703f0006426a3670111'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:29.558846"
+    },
+    {
+      "epc": "b'e2004703914064269d7b0114'",
+      "rssi": -73,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:30.385654"
+    },
+    {
+      "epc": "b'e2004703914064269d7b0114'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:30.705647"
+    },
+    {
+      "epc": "b'e2004703914064269d7b0114'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:30.985956"
+    },
+    {
+      "epc": "b'e2004703914064269d7b0114'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:31.301658"
+    },
+    {
+      "epc": "b'e2004703914064269d7b0114'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:31.501722"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -74,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:31.621333"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -74,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:31.769995"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:31.906117"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -74,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:33.220770"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:33.485133"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -74,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:33.618375"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -75,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:33.741536"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -75,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:34.086625"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -75,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:34.670822"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -74,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:34.910628"
+    },
+    {
+      "epc": "b'e2004703914064269d7b0114'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:35.237074"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:41.447760"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:45.347755"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -80,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:47.331987"
+    },
+    {
+      "epc": "b'e2004703914064269d7b0114'",
+      "rssi": -62,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:53.122972"
+    },
+    {
+      "epc": "b'e2004703914064269d7b0114'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:53.319504"
+    },
+    {
+      "epc": "b'e2004703914064269d7b0114'",
+      "rssi": -71,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:53.648405"
+    },
+    {
+      "epc": "b'000000000000000000002664'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:55.333283"
+    },
+    {
+      "epc": "b'000000000000000000002664'",
+      "rssi": -74,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:55.611966"
+    },
+    {
+      "epc": "b'000000000000000000002664'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:55.934960"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:59.554491"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -74,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:40:59.842804"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:00.045612"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:00.198573"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -76,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:00.317465"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -76,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:00.451037"
+    },
+    {
+      "epc": "b'e2004703f0006426a3670111'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:00.896660"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -80,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:01.063401"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -78,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:01.183752"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:01.520461"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:01.695798"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -72,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:01.832616"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -71,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:02.035266"
+    },
+    {
+      "epc": "b'e2004703914064269d7b0114'",
+      "rssi": -71,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:02.368342"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -76,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:02.483717"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -79,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:02.617535"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -76,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:02.781804"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:02.900429"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -78,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:03.049749"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -74,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:03.213687"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:03.411714"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:03.594777"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -71,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:03.792566"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:03.961297"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:04.112938"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -78,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:04.237222"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -78,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:04.410708"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:04.530664"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -78,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:04.664852"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -78,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:04.782425"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:04.916462"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:05.034003"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -78,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:05.649156"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -78,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:05.813705"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:05.963499"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -76,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:06.222267"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:06.443404"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:06.580837"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:06.792182"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -75,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:06.929183"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:07.125819"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -74,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:07.277998"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:07.473702"
+    },
+    {
+      "epc": "b'000000000000000000002668'",
+      "rssi": -74,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:08.268044"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:08.411732"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:09.027202"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -78,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:09.286829"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -75,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:09.506550"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -76,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:09.645611"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:10.730139"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:11.032990"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:11.144897"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:11.340238"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:11.461434"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -67,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:11.672548"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -80,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:11.793851"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -71,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:11.990395"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -78,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:12.111031"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -68,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:12.322858"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:12.427394"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:12.623998"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:12.743958"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:12.937393"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -76,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:13.061164"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:13.273449"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -74,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:13.393755"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -68,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:13.588959"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:13.725765"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -72,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:13.860112"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -66,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:14.056322"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -72,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:14.176043"
+    },
+    {
+      "epc": "b'000000000000000000002657'",
+      "rssi": -73,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:14.293907"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -72,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:14.442748"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:14.559715"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -66,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:14.771053"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:14.891913"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:15.030502"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:15.252259"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -66,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:15.814320"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:15.942334"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -66,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:16.138242"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:16.273274"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:16.408905"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:16.557397"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -67,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:16.831807"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -71,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:17.136336"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -67,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:17.368022"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -74,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:17.490275"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -67,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:17.696313"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -76,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:17.814247"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:18.021349"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -79,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:18.137833"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:18.327991"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:18.452420"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -69,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:18.653788"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:18.791351"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -71,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:18.964041"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:19.104675"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -73,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:19.284123"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -80,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:19.422613"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -76,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:19.625541"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:20.022382"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -78,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:20.218642"
+    },
+    {
+      "epc": "b'e2004703914064269d7b0114'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:20.402661"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -80,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:20.709827"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:22.207899"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -80,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:23.165182"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -76,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:23.520998"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -71,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:23.838044"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -71,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:27.069909"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -71,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:27.265308"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -74,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:28.879742"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -74,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:29.016334"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -75,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:29.153123"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -76,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:29.285534"
+    },
+    {
+      "epc": "b'000000000000000000002664'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:32.373310"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -81,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:36.598404"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -73,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:37.882167"
+    },
+    {
+      "epc": "b'000000000000000000002664'",
+      "rssi": -76,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:38.184609"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:38.466121"
+    },
+    {
+      "epc": "b'000000000000000000002664'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:39.099365"
+    },
+    {
+      "epc": "b'000000000000000000002664'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:39.488551"
+    },
+    {
+      "epc": "b'000000000000000000002664'",
+      "rssi": -74,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:39.878331"
+    },
+    {
+      "epc": "b'000000000000000000002664'",
+      "rssi": -74,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:40.825322"
+    },
+    {
+      "epc": "b'000000000000000000002664'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:41.144444"
+    },
+    {
+      "epc": "b'000000000000000000002664'",
+      "rssi": -76,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:41.450628"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -80,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:41.687502"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -76,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:50.289030"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -75,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:53.408402"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:55.118094"
+    },
+    {
+      "epc": "b'000000000000000000002664'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:55.520345"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -76,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:41:59.528929"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:00.026754"
+    },
+    {
+      "epc": "b'e2004703914064269d7b0114'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:00.355308"
+    },
+    {
+      "epc": "b'e2004703914064269d7b0114'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:00.982901"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -78,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:01.336177"
+    },
+    {
+      "epc": "b'000000000000000000002664'",
+      "rssi": -74,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:01.642093"
+    },
+    {
+      "epc": "b'000000000000000000002664'",
+      "rssi": -74,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:01.957743"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:02.891941"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -76,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:03.125494"
+    },
+    {
+      "epc": "b'000000000000000000002664'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:03.516588"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -76,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:03.885484"
+    },
+    {
+      "epc": "b'000000000000000000002664'",
+      "rssi": -73,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:05.083752"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -74,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:05.452319"
+    },
+    {
+      "epc": "b'000000000000000000002664'",
+      "rssi": -74,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:05.755033"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -74,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:06.023669"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -75,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:06.398580"
+    },
+    {
+      "epc": "b'000000000000000000002664'",
+      "rssi": -73,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:06.704057"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -76,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:06.956375"
+    },
+    {
+      "epc": "b'000000000000000000002670'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:07.700274"
+    },
+    {
+      "epc": "b'000000000000000000002670'",
+      "rssi": -71,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:08.239389"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:09.037571"
+    },
+    {
+      "epc": "b'000000000000000000002666'",
+      "rssi": -78,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:09.784713"
+    },
+    {
+      "epc": "b'000000000000000000002666'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:09.975553"
+    },
+    {
+      "epc": "b'000000000000000000002666'",
+      "rssi": -77,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:10.159849"
+    },
+    {
+      "epc": "b'000000000000000000002666'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:10.375253"
+    },
+    {
+      "epc": "b'000000000000000000002666'",
+      "rssi": -76,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:10.542759"
+    },
+    {
+      "epc": "b'e2004703f0006426a3670111'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:13.018309"
+    },
+    {
+      "epc": "b'e2004703f0006426a3670111'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:14.553464"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:21.937478"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -71,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:22.136001"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -71,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:22.304538"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -79,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:25.764518"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -71,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:26.747365"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -78,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:27.029819"
+    },
+    {
+      "epc": "b'e2004703f0006426a3670111'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:28.263691"
+    },
+    {
+      "epc": "b'000000000000000000002666'",
+      "rssi": -80,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:28.857710"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -79,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:29.015216"
+    },
+    {
+      "epc": "b'000000000000000000002666'",
+      "rssi": -76,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:29.184320"
+    },
+    {
+      "epc": "b'000000000000000000002666'",
+      "rssi": -77,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:29.585134"
+    },
+    {
+      "epc": "b'000000000000000000002666'",
+      "rssi": -77,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:30.001086"
+    },
+    {
+      "epc": "b'000000000000000000002666'",
+      "rssi": -78,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:30.730158"
+    },
+    {
+      "epc": "b'e2004703f0006426a3670111'",
+      "rssi": -73,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:32.444633"
+    },
+    {
+      "epc": "b'e2004703f0006426a3670111'",
+      "rssi": -73,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:32.646775"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -74,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:35.133741"
+    },
+    {
+      "epc": "b'000000000000000000002653'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:37.343717"
+    },
+    {
+      "epc": "b'e2004703f0006426a3670111'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:38.343846"
+    },
+    {
+      "epc": "b'e2004703f0006426a3670111'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:38.622101"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:39.264562"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -76,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:39.924040"
+    },
+    {
+      "epc": "b'e2004703f0006426a3670111'",
+      "rssi": -73,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:40.689035"
+    },
+    {
+      "epc": "b'e2004703f0006426a3670111'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:40.860676"
+    },
+    {
+      "epc": "b'e2004703f0006426a3670111'",
+      "rssi": -71,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:41.277515"
+    },
+    {
+      "epc": "b'e2004703f0006426a3670111'",
+      "rssi": -73,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:41.568874"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:42.197547"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:42.596324"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -74,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:42.885055"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -74,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:43.277789"
+    },
+    {
+      "epc": "b'e2004703f0006426a3670111'",
+      "rssi": -71,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:44.150467"
+    },
+    {
+      "epc": "b'e2004703f0006426a3670111'",
+      "rssi": -71,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:44.434676"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -74,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:44.827574"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -74,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:45.118691"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -73,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:45.511997"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -74,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:45.910815"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -74,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:46.530895"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -74,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:46.927496"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:47.560136"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -77,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:47.974074"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:48.524702"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:49.816105"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -74,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:50.020363"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:50.808750"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -76,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:52.003704"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -76,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:52.312342"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:52.613380"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -76,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:52.932248"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -76,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:53.229200"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -73,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:53.529846"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -71,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:54.173165"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:54.463925"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:54.761727"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:55.394955"
+    },
+    {
+      "epc": "b'e2004703f0006426a3670111'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:55.741322"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -71,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:56.030607"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:56.327994"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:56.957050"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -73,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:57.256942"
+    },
+    {
+      "epc": "b'000000000000000000002739'",
+      "rssi": -75,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:58.218145"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -76,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:58.807621"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -76,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:59.204084"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -78,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:42:59.931164"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -69,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:00.240427"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -69,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:00.525714"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -69,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:01.168920"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -69,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:01.567961"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -69,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:01.890287"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -71,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:02.845423"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -69,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:03.015646"
+    },
+    {
+      "epc": "b'000000000000000000002666'",
+      "rssi": -72,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:03.308335"
+    },
+    {
+      "epc": "b'000000000000000000002666'",
+      "rssi": -74,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:03.498497"
+    },
+    {
+      "epc": "b'000000000000000000002671'",
+      "rssi": -75,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:03.748774"
+    },
+    {
+      "epc": "b'000000000000000000002666'",
+      "rssi": -73,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:03.947786"
+    },
+    {
+      "epc": "b'000000000000000000002666'",
+      "rssi": -76,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:04.085235"
+    },
+    {
+      "epc": "b'000000000000000000002666'",
+      "rssi": -74,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:04.435961"
+    },
+    {
+      "epc": "b'000000000000000000002666'",
+      "rssi": -69,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:04.569570"
+    },
+    {
+      "epc": "b'000000000000000000002667'",
+      "rssi": -74,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:04.686629"
+    },
+    {
+      "epc": "b'000000000000000000002666'",
+      "rssi": -75,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:05.148072"
+    },
+    {
+      "epc": "b'e2004703f0006426a3670111'",
+      "rssi": -71,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:05.314548"
+    },
+    {
+      "epc": "b'e2004703f0006426a3670111'",
+      "rssi": -70,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:05.529209"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -73,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:09.273864"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -79,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:15.255719"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -78,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:20.967463"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -74,
+      "antenna": 1,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:21.319969"
+    },
+    {
+      "epc": "b'30396061c14b8dc000013a24'",
+      "rssi": -76,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:22.057499"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:22.361150"
+    },
+    {
+      "epc": "b'30396061c14b8dc000013a24'",
+      "rssi": -69,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:25.004909"
+    },
+    {
+      "epc": "b'000000000000000000002713'",
+      "rssi": -74,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:32.662522"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -79,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:43:50.814419"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -80,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:44:05.119019"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -77,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:44:05.283370"
+    },
+    {
+      "epc": "b'30396120c1d15d80000006d7'",
+      "rssi": -78,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:44:05.651320"
+    },
+    {
+      "epc": "b'000000000000000000002631'",
+      "rssi": -68,
+      "antenna": 2,
+      "seen_count": 1,
+      "timestamp": "2026-03-28T10:44:12.954959"
+    }
+  ]
+}

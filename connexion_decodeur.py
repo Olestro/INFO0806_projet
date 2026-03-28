@@ -27,7 +27,7 @@ from typing import Optional
 # ── Chemins des fichiers de stockage ──────────────────────────────────
 SCRIPT_DIR = Path(__file__).parent
 PRESETS_FILE = SCRIPT_DIR / "presets.json"
-TAGS_FILE = SCRIPT_DIR / "tags.json"
+TAGS_FILE = SCRIPT_DIR / "tags_course.json"
 CONFIG_FILE = SCRIPT_DIR / "config.json"
 
 # ── Valeurs par défaut ────────────────────────────────────────────────
@@ -241,8 +241,9 @@ def on_tag_report(_reader, tags, antennas, affiche_antennes=False):
 
 		# Stockage dans le fichier JSON
 		enregistrer_tag(epc, rssi, ant_id, seen)
-
-		print(f"[{now}] EPC={epc} | RSSI={rssi} | ANT={ant_id} | Seen={seen}")
+		#si epc commence par 000000
+		if(epc.startswith("b'00000000")):
+			print(f"[{now}] EPC={epc} | RSSI={rssi} | ANT={ant_id} | Seen={seen}")
 
 
 # =====================================================================
