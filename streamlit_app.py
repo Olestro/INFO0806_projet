@@ -162,7 +162,7 @@ def page_accueil():
                     if cfg:
                         st.session_state.current_preset = preset_name
                         st.success(f"✅ '{preset_name}' chargé!")
-                        st.rerun()
+                        # st.rerun()
                 
                 # Afficher les détails
                 if preset_name in presets:
