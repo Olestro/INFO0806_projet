@@ -1,0 +1,57 @@
+[2026-04-13 18:50:29] Demarrage scan preset='base' ip=169.254.1.1 port=5084 antennas=[1, 2] duration=0
+[2026-04-13 18:50:29] Configuration enregistree dans config.json
+[2026-04-13 18:50:29] Connexion LLRP a 169.254.1.1:5084 (antennes=1,2)...
+[2026-04-13 18:50:29] Lecture des tags en cours (Ctrl+C pour arreter).
+[2026-04-13 18:50:29] [ERREUR] Inventaire impossible (OSError): [WinError 10051] Une opération a été tentée sur un réseau impossible à atteindre
+[2026-04-13 18:50:29] Reader not connected. Disconnect is not needed.
+[2026-04-13 18:50:29] Erreur scan code=11
+[2026-04-13 18:50:38] Demarrage scan preset='base' ip=169.254.1.1 port=5084 antennas=[1, 2] duration=0
+[2026-04-13 18:50:38] Configuration enregistree dans config.json
+[2026-04-13 18:50:38] Connexion LLRP a 169.254.1.1:5084 (antennes=1,2)...
+[2026-04-13 18:50:38] Lecture des tags en cours (Ctrl+C pour arreter).
+[2026-04-13 18:50:38] [ERREUR] Inventaire impossible (OSError): [WinError 10051] Une opération a été tentée sur un réseau impossible à atteindre
+[2026-04-13 18:50:38] Reader not connected. Disconnect is not needed.
+[2026-04-13 18:50:38] Erreur scan code=11
+[2026-04-13 18:57:26] Demarrage scan preset='feur' ip=169.1.1.1 port=5084 antennas=[1, 2] duration=0
+[2026-04-13 18:57:26] Connexion LLRP a 169.1.1.1:5084 (antennes=1,2)...
+[2026-04-13 18:57:26] Lecture des tags en cours (Ctrl+C pour arreter).
+[2026-04-13 18:57:31] [ERREUR] Inventaire impossible (TimeoutError): timed out
+[2026-04-13 18:57:31] Reader not connected. Disconnect is not needed.
+[2026-04-13 18:57:31] Erreur scan code=11
+[2026-04-13 19:03:19] Demarrage scan preset='base' ip=169.254.1.1 port=5084 antennas=[1, 2] duration=0
+[2026-04-13 19:03:19] Connexion LLRP a 169.254.1.1:5084 (antennes=1,2)...
+[2026-04-13 19:03:19] Lecture des tags en cours (Ctrl+C pour arreter).
+[2026-04-13 19:03:19] [ERREUR] Inventaire impossible (OSError): [WinError 10051] Une opération a été tentée sur un réseau impossible à atteindre
+[2026-04-13 19:03:19] Reader not connected. Disconnect is not needed.
+[2026-04-13 19:03:19] Erreur scan code=11
+[2026-04-13 19:03:22] Demarrage scan preset='base' ip=169.254.1.1 port=5084 antennas=[1, 2] duration=0
+[2026-04-13 19:03:22] Connexion LLRP a 169.254.1.1:5084 (antennes=1,2)...
+[2026-04-13 19:03:22] Lecture des tags en cours (Ctrl+C pour arreter).
+[2026-04-13 19:03:22] [ERREUR] Inventaire impossible (OSError): [WinError 10051] Une opération a été tentée sur un réseau impossible à atteindre
+[2026-04-13 19:03:22] Reader not connected. Disconnect is not needed.
+[2026-04-13 19:03:22] Erreur scan code=11
+[2026-04-13 19:04:22] Demarrage scan preset='base' ip=169.254.1.1 port=5084 antennas=[1, 2] duration=0
+[2026-04-13 19:04:22] Connexion LLRP a 169.254.1.1:5084 (antennes=1,2)...
+[2026-04-13 19:04:22] Lecture des tags en cours (Ctrl+C pour arreter).
+[2026-04-13 19:04:22] [ERREUR] Inventaire impossible (OSError): [WinError 10051] Une opération a été tentée sur un réseau impossible à atteindre
+[2026-04-13 19:04:22] Reader not connected. Disconnect is not needed.
+[2026-04-13 19:04:22] Erreur scan code=11
+[2026-04-13 19:04:27] Demarrage scan preset='base' ip=169.254.1.1 port=5084 antennas=[1, 2] duration=0
+[2026-04-13 19:04:27] Connexion LLRP a 169.254.1.1:5084 (antennes=1,2)...
+[2026-04-13 19:04:27] Lecture des tags en cours (Ctrl+C pour arreter).
+[2026-04-13 19:04:27] [ERREUR] Inventaire impossible (OSError): [WinError 10051] Une opération a été tentée sur un réseau impossible à atteindre
+[2026-04-13 19:04:27] Reader not connected. Disconnect is not needed.
+[2026-04-13 19:04:27] Erreur scan code=11
+[2026-04-13 20:15:17] Demarrage scan preset='base' ip=169.254.1.1 port=5656 antennas=[1, 2, 3, 4] duration=5
+[2026-04-13 20:15:17] Connexion LLRP a 169.254.1.1:5656 (antennes=1,2,3,4)...
+[2026-04-13 20:15:17] Lecture des tags en cours (Ctrl+C pour arreter).
+[2026-04-13 20:15:17] [ERREUR] Inventaire impossible (OSError): [WinError 10051] Une opération a été tentée sur un réseau impossible à atteindre
+[2026-04-13 20:15:17] Reader not connected. Disconnect is not needed.
+[2026-04-13 20:15:17] Erreur scan code=11
+[2026-04-13 20:56:44] Demarrage scan preset='base' ip=169.254.1.1 port=5656 antennas=[1, 2, 3, 4] duration=5
+[2026-04-13 20:56:44] Connexion LLRP a 169.254.1.1:5656 (antennes=1,2,3,4)...
+[2026-04-13 20:56:44] Lecture des tags en cours (Ctrl+C pour arreter).
+[2026-04-13 20:56:44] Preset 'base' charge.
+[2026-04-13 20:56:44] [ERREUR] Inventaire impossible (OSError): [WinError 10051] Une opération a été tentée sur un réseau impossible à atteindre
+[2026-04-13 20:56:44] Reader not connected. Disconnect is not needed.
+[2026-04-13 20:56:44] Erreur scan mode classique code=11

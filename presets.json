@@ -1,0 +1,46 @@
+{
+  "base": {
+    "ip": "169.254.1.1",
+    "port": 5656,
+    "timeout": 1.0,
+    "antennas": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "duration": 5,
+    "afficher_antennes": false,
+    "global_tx_power": 19.5,
+    "global_rx_sensitivity": -80.0,
+    "antenna_params": {
+      "1": {
+        "tx_power": 18.0,
+        "rx_sensitivity": -80.0
+      },
+      "2": {
+        "tx_power": 27.5,
+        "rx_sensitivity": -80.0
+      },
+      "3": {
+        "tx_power": 31.5,
+        "rx_sensitivity": -80.0
+      },
+      "4": {
+        "tx_power": 31.5,
+        "rx_sensitivity": -80.0
+      }
+    }
+  },
+  "feur": {
+    "ip": "169.1.1.1",
+    "port": 5084,
+    "timeout": 5.0,
+    "antennas": [
+      1,
+      2
+    ],
+    "duration": 0,
+    "afficher_antennes": false
+  }
+}

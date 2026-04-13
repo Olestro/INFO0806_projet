@@ -114,35 +114,18 @@ def valider_parametres(ip: str, port: int, timeout: float,
 
 
 # =====================================================================
-#  Gestion de la configuration lecteur / antennes
-# =====================================================================
-
-def sauvegarder_config(ip: str, port: int, timeout: float,
-                       antennas: list[int], duration: int,
-                       afficher_antennes: bool) -> None:
-	"""Enregistre la config courante du lecteur dans config.json."""
-	config = {
-		"ip": ip,
-		"port": port,
-		"timeout": timeout,
-		"antennas": antennas,
-		"duration": duration,
-		"afficher_antennes": afficher_antennes,
-	}
-	save_json(CONFIG_FILE, config)
-	print(f"Configuration enregistree dans {CONFIG_FILE.name}")
-
-
-# =====================================================================
 #  Gestion des presets
 # =====================================================================
 
 def sauvegarder_preset(name: str, ip: str, port: int, timeout: float,
                        antennas: list[int], duration: int,
-                       afficher_antennes: bool) -> None:
+                       afficher_antennes: bool,
+                       global_tx_power: Optional[float] = None,
+                       global_rx_sensitivity: Optional[float] = None,
+                       antenna_params: Optional[dict] = None) -> None:
 	"""Sauvegarde un preset dans presets.json."""
 	presets = load_json(PRESETS_FILE)
-	presets[name] = {
+	preset = {
 		"ip": ip,
 		"port": port,
 		"timeout": timeout,
@@ -150,6 +133,15 @@ def sauvegarder_preset(name: str, ip: str, port: int, timeout: float,
 		"duration": duration,
 		"afficher_antennes": afficher_antennes,
 	}
+
+	if global_tx_power is not None:
+		preset["global_tx_power"] = global_tx_power
+	if global_rx_sensitivity is not None:
+		preset["global_rx_sensitivity"] = global_rx_sensitivity
+	if antenna_params is not None:
+		preset["antenna_params"] = antenna_params
+
+	presets[name] = preset
 	save_json(PRESETS_FILE, presets)
 	print(f"Preset '{name}' sauvegarde.")
 
@@ -268,9 +260,6 @@ def run_inventory(ip: str, port: int, timeout: float, antennas: list[int],
 	except Exception as exc:
 		print(f"[ERREUR] Impossible d'importer sllurp ({exc.__class__.__name__}): {exc}")
 		return 10
-
-	# Sauvegarde automatique de la config utilisée
-	sauvegarder_config(ip, port, timeout, antennas, duration, afficher_antennes)
 
 	print(f"Connexion LLRP a {ip}:{port} (antennes={','.join(str(a) for a in antennas)})...")
 	print("Lecture des tags en cours (Ctrl+C pour arreter).")
