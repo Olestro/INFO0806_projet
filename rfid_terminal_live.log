@@ -1,0 +1,7 @@
+[2026-04-13 20:17:34] Demarrage scan preset='t' ip=10.42.0.15 port=5084 antennas=[1, 2] duration=0
+[2026-04-13 20:17:34] Configuration enregistree dans config.json
+[2026-04-13 20:17:34] Connexion LLRP a 10.42.0.15:5084 (antennes=1,2)...
+[2026-04-13 20:17:34] Lecture des tags en cours (Ctrl+C pour arreter).
+[2026-04-13 20:17:39] [ERREUR] Inventaire impossible (TimeoutError): timed out
+[2026-04-13 20:17:39] Reader not connected. Disconnect is not needed.
+[2026-04-13 20:17:39] Erreur scan code=11
