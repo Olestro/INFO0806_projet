@@ -14,15 +14,14 @@ from datetime import datetime
 import time
 from html import escape
 import pandas as pd
-import multiprocessing as mp
+import threading
+from contextlib import redirect_stdout, redirect_stderr
 import uuid
-import os
-import signal
-import scan_worker
 from connexion_decodeur import (
     load_json, save_json, valider_parametres, sauvegarder_preset,
     charger_preset, supprimer_preset, lister_presets, parse_antennas,
-    DEFAULT_IP, DEFAULT_PORT, DEFAULT_TIMEOUT, DEFAULT_ANTENNAS
+    DEFAULT_IP, DEFAULT_PORT, DEFAULT_TIMEOUT, DEFAULT_ANTENNAS,
+    run_inventory,
 )
 
 # ────────────────────────────────────────────────────────────────────
@@ -48,7 +47,8 @@ WHITELIST_FILE = SCRIPT_DIR / "whitelist.json"
 LIVE_LOG_FILE = SCRIPT_DIR / "rfid_terminal_live.log"
 ARCHIVE_LOG_FILE = SCRIPT_DIR / "rfid_terminal_archive.log"
 SCAN_STATE_FILE = SCRIPT_DIR / "scan_state.json"
-SCAN_PROCESSES: dict[str, mp.Process] = {}
+SCAN_THREADS: dict[str, threading.Thread] = {}
+SCAN_STOP_EVENTS: dict[str, threading.Event] = {}
 SCAN_STATUS: dict[str, str] = {}
 
 
@@ -185,6 +185,29 @@ def append_terminal_log(message: str) -> None:
             formatted = f"[{timestamp}] {line}\n"
             live_f.write(formatted)
             archive_f.write(formatted)
+
+
+class TerminalLogStream:
+    """Flux texte compatible stdout/stderr qui ecrit dans le log en continu."""
+
+    def __init__(self) -> None:
+        self._buffer = ""
+
+    def write(self, text: str) -> int:
+        if not text:
+            return 0
+
+        self._buffer += text
+        while "\n" in self._buffer:
+            line, self._buffer = self._buffer.split("\n", 1)
+            append_terminal_log(line)
+
+        return len(text)
+
+    def flush(self) -> None:
+        if self._buffer:
+            append_terminal_log(self._buffer)
+            self._buffer = ""
 
 
 def read_terminal_log(max_lines: int = 400, source: str = "live", newest_first: bool = False) -> str:
@@ -421,32 +444,60 @@ def _read_scan_state(max_age_s: float = 5.0) -> dict | None:
     return payload
 
 
-def _stop_process_by_pid(pid: int) -> None:
+def _run_scan_thread(
+    cfg: dict,
+    preset_name: str,
+    session_uid: str,
+    stop_event: threading.Event,
+    completion_message: str,
+) -> None:
+    SCAN_STATUS[session_uid] = "running"
+    _write_scan_state("running", session_uid, preset_name)
+
+    append_terminal_log(
+        f"Demarrage scan preset='{preset_name}' "
+        f"ip={cfg['ip']} port={cfg['port']} antennas={cfg['antennas']} duration={cfg['duration']}"
+    )
+
+    terminal_stream = TerminalLogStream()
     try:
-        os.kill(pid, signal.SIGTERM)
-    except Exception:
-        return
-    sigkill = getattr(signal, "SIGKILL", None)
-    if sigkill is None:
-        return
-    time.sleep(0.5)
-    try:
-        os.kill(pid, sigkill)
-    except Exception:
-        return
+        with redirect_stdout(terminal_stream), redirect_stderr(terminal_stream):
+            result = run_inventory(
+                cfg["ip"],
+                cfg["port"],
+                cfg["timeout"],
+                cfg["antennas"],
+                cfg["duration"],
+                cfg.get("afficher_antennes", False),
+                stop_event=stop_event,
+                client_holder=None,
+            )
+        terminal_stream.flush()
+
+        if result == 0 and not stop_event.is_set():
+            append_terminal_log(completion_message)
+        elif result != 0:
+            append_terminal_log(f"Erreur scan code={result}")
+    except Exception as exc:
+        append_terminal_log(f"Exception scan: {exc}")
+    finally:
+        stop_event.set()
+        SCAN_STATUS[session_uid] = "idle"
+        _clear_scan_state()
+        SCAN_THREADS.pop(session_uid, None)
+        SCAN_STOP_EVENTS.pop(session_uid, None)
 
 
 def _start_background_scan(cfg: dict, preset_name: str, completion_message: str) -> bool:
     session_uid = _get_session_uid()
-    stop_flag_path = _get_stop_flag_path(session_uid)
-    existing_process = SCAN_PROCESSES.get(session_uid)
-    if existing_process is not None and existing_process.is_alive():
+    existing_thread = SCAN_THREADS.get(session_uid)
+    if existing_thread is not None and existing_thread.is_alive():
         append_terminal_log("Redemarrage demande: arret du scan en cours...")
         _stop_scan()
         deadline = time.time() + 3.0
-        while existing_process.is_alive() and time.time() < deadline:
+        while existing_thread.is_alive() and time.time() < deadline:
             time.sleep(0.1)
-        if existing_process.is_alive():
+        if existing_thread.is_alive():
             append_terminal_log("Echec redemarrage: scan toujours actif.")
             return False
 
@@ -455,25 +506,15 @@ def _start_background_scan(cfg: dict, preset_name: str, completion_message: str)
     st.session_state.scan_started_at = datetime.now().isoformat()
     st.session_state.scan_preset_name = preset_name
 
-    ctx = mp.get_context("spawn")
-    if stop_flag_path.exists():
-        stop_flag_path.unlink()
-    process = ctx.Process(
-        target=scan_worker.run_scan_process,
-        args=(
-            cfg,
-            preset_name,
-            session_uid,
-            str(stop_flag_path),
-            str(SCAN_STATE_FILE),
-            str(LIVE_LOG_FILE),
-            str(ARCHIVE_LOG_FILE),
-            completion_message,
-        ),
+    stop_event = threading.Event()
+    SCAN_STOP_EVENTS[session_uid] = stop_event
+    thread = threading.Thread(
+        target=_run_scan_thread,
+        args=(cfg, preset_name, session_uid, stop_event, completion_message),
         daemon=True,
     )
-    SCAN_PROCESSES[session_uid] = process
-    process.start()
+    SCAN_THREADS[session_uid] = thread
+    thread.start()
     return True
 
 
@@ -483,58 +524,33 @@ def _start_classic_scan(cfg: dict, preset_name: str) -> bool:
 
 def _is_scan_running() -> bool:
     session_uid = _get_session_uid()
-    process = SCAN_PROCESSES.get(session_uid)
-    return process is not None and process.is_alive()
+    thread = SCAN_THREADS.get(session_uid)
+    return thread is not None and thread.is_alive()
 
 
 def _stop_scan() -> bool:
     session_uid = _get_session_uid()
-    process = SCAN_PROCESSES.get(session_uid)
-    stop_flag_path = _get_stop_flag_path(session_uid)
-    state_payload = _read_scan_state(max_age_s=30.0)
-    state_session_uid = state_payload.get("session_uid") if state_payload else None
-    state_pid = state_payload.get("pid") if state_payload else None
-    if state_session_uid:
-        stop_flag_path = _get_stop_flag_path(str(state_session_uid))
+    thread = SCAN_THREADS.get(session_uid)
+    stop_event = SCAN_STOP_EVENTS.get(session_uid)
 
-    if process is None or not process.is_alive():
+    if thread is None or not thread.is_alive():
         SCAN_STATUS[session_uid] = "idle"
-        if state_payload and state_payload.get("status") in {"starting", "running", "stopping"}:
-            stop_flag_path.write_text("stop", encoding="utf-8")
-            append_terminal_log(
-                f"Demande d'arret du scan en cours (pid={state_pid})."
-            )
-            if isinstance(state_pid, int):
-                _stop_process_by_pid(state_pid)
-            return True
-
-        if stop_flag_path.exists():
-            stop_flag_path.unlink()
         _clear_scan_state()
         return False
 
     SCAN_STATUS[session_uid] = "stopping"
     _write_scan_state("stopping", session_uid, st.session_state.get("scan_preset_name"))
 
-    stop_flag_path.write_text("stop", encoding="utf-8")
+    if stop_event is not None:
+        stop_event.set()
 
-    pid = process.pid
-    append_terminal_log(f"Demande d'arret du scan en cours (pid={pid}).")
-    process.join(timeout=2.0)
-    if process.is_alive():
-        process.terminate()
-        process.join(timeout=2.0)
-        if process.is_alive():
-            append_terminal_log(f"Processus scan toujours actif apres terminate (pid={pid}).")
-        else:
-            append_terminal_log(f"Processus scan termine (pid={pid}).")
+    append_terminal_log("Demande d'arret du scan en cours.")
+    thread.join(timeout=2.0)
+    if thread.is_alive():
+        append_terminal_log("Scan toujours actif apres demande d'arret.")
     else:
-        append_terminal_log(f"Processus scan termine proprement (pid={pid}).")
-
-    if not process.is_alive():
-        SCAN_PROCESSES.pop(session_uid, None)
-        if stop_flag_path.exists():
-            stop_flag_path.unlink()
+        SCAN_THREADS.pop(session_uid, None)
+        SCAN_STOP_EVENTS.pop(session_uid, None)
         SCAN_STATUS[session_uid] = "idle"
         _clear_scan_state()
     return True
@@ -548,8 +564,8 @@ def _get_scan_status() -> str:
     """Retourne l'etat du scan pour la session courante."""
     session_uid = _get_session_uid()
     status = SCAN_STATUS.get(session_uid, "idle")
-    process = SCAN_PROCESSES.get(session_uid)
-    stop_flag_path = _get_stop_flag_path(session_uid)
+    thread = SCAN_THREADS.get(session_uid)
+    stop_event = SCAN_STOP_EVENTS.get(session_uid)
 
     state_payload = _read_scan_state(max_age_s=10.0)
     if state_payload:
@@ -560,14 +576,12 @@ def _get_scan_status() -> str:
         if file_status in {"starting", "running", "stopping", "idle"}:
             return file_status
 
-    if process is not None and process.is_alive():
-        if stop_flag_path.exists():
+    if thread is not None and thread.is_alive():
+        if stop_event is not None and stop_event.is_set():
             return "stopping"
         return "running"
 
     if status in {"starting", "running", "stopping"}:
-        if stop_flag_path.exists():
-            stop_flag_path.unlink()
         return "idle"
     return status
 

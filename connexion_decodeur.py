@@ -27,10 +27,11 @@ from typing import Optional
 # ── Chemins des fichiers de stockage ──────────────────────────────────
 SCRIPT_DIR = Path(__file__).parent
 PRESETS_FILE = SCRIPT_DIR / "presets.json"
-TAGS_FILE = SCRIPT_DIR / "tags_course.json"
+TAGS_FILE = SCRIPT_DIR / "tags.json"
 CONFIG_FILE = SCRIPT_DIR / "config.json"
 
 # ── Valeurs par défaut ────────────────────────────────────────────────
+# DEFAULT_IP = "169.254.1.1"
 DEFAULT_IP = "10.42.0.15"
 DEFAULT_PORT = 5084  # Port LLRP standard (lecteurs Impinj)
 DEFAULT_TIMEOUT = 5.0
@@ -77,7 +78,6 @@ def parse_antennas(value: str) -> list[int]:
 
 		if antenna not in antennas:
 			antennas.append(antenna)
-
 	return antennas
 
 
@@ -114,18 +114,14 @@ def valider_parametres(ip: str, port: int, timeout: float,
 
 
 # =====================================================================
-#  Gestion des presets
+#  Gestion de la configuration lecteur / antennes
 # =====================================================================
 
-def sauvegarder_preset(name: str, ip: str, port: int, timeout: float,
+def sauvegarder_config(ip: str, port: int, timeout: float,
                        antennas: list[int], duration: int,
-                       afficher_antennes: bool,
-                       global_tx_power: Optional[float] = None,
-                       global_rx_sensitivity: Optional[float] = None,
-                       antenna_params: Optional[dict] = None) -> None:
-	"""Sauvegarde un preset dans presets.json."""
-	presets = load_json(PRESETS_FILE)
-	preset = {
+                       afficher_antennes: bool) -> None:
+	"""Enregistre la config courante du lecteur dans config.json."""
+	config = {
 		"ip": ip,
 		"port": port,
 		"timeout": timeout,
@@ -133,15 +129,27 @@ def sauvegarder_preset(name: str, ip: str, port: int, timeout: float,
 		"duration": duration,
 		"afficher_antennes": afficher_antennes,
 	}
+	save_json(CONFIG_FILE, config)
+	print(f"Configuration enregistree dans {CONFIG_FILE.name}")
 
-	if global_tx_power is not None:
-		preset["global_tx_power"] = global_tx_power
-	if global_rx_sensitivity is not None:
-		preset["global_rx_sensitivity"] = global_rx_sensitivity
-	if antenna_params is not None:
-		preset["antenna_params"] = antenna_params
 
-	presets[name] = preset
+# =====================================================================
+#  Gestion des presets
+# =====================================================================
+
+def sauvegarder_preset(name: str, ip: str, port: int, timeout: float,
+                       antennas: list[int], duration: int,
+                       afficher_antennes: bool) -> None:
+	"""Sauvegarde un preset dans presets.json."""
+	presets = load_json(PRESETS_FILE)
+	presets[name] = {
+		"ip": ip,
+		"port": port,
+		"timeout": timeout,
+		"antennas": antennas,
+		"duration": duration,
+		"afficher_antennes": afficher_antennes,
+	}
 	save_json(PRESETS_FILE, presets)
 	print(f"Preset '{name}' sauvegarde.")
 
@@ -152,6 +160,7 @@ def charger_preset(name: str) -> Optional[dict]:
 	if name not in presets:
 		print(f"[ERREUR] Preset '{name}' introuvable.")
 		return None
+	print(f"Preset '{name}' charge.")
 	return presets[name]
 
 
@@ -185,7 +194,7 @@ def lister_presets() -> None:
 #  Stockage des tags lus
 # =====================================================================
 
-def enregistrer_tag(epc: str, rssi, ant_id: int, seen: int) -> None:
+def enregistrer_tag(epc: str, rssi, ant_id: int, seen: int, reader_timestamp=None) -> None:
 	"""Ajoute un tag lu dans tags.json."""
 	data = load_json(TAGS_FILE)
 	if "tags" not in data:
@@ -195,7 +204,8 @@ def enregistrer_tag(epc: str, rssi, ant_id: int, seen: int) -> None:
 		"rssi": rssi,
 		"antenna": ant_id,
 		"seen_count": seen,
-		"timestamp": datetime.now().isoformat(),
+		"reader_timestamp": reader_timestamp,
+		"client_timestamp": datetime.now().isoformat(),
 	})
 	save_json(TAGS_FILE, data)
 
@@ -228,13 +238,25 @@ def on_tag_report(_reader, tags, antennas, affiche_antennes=False):
 		rssi = tag.get("PeakRSSI", "?")
 		ant_id = tag.get("AntennaID", antennas[0])
 		seen = tag.get("TagSeenCount", 1)
-		now = datetime.now().strftime("%H:%M:%S")
+		
+		# Récupérer le timestamp du lecteur (format: secondes*1e6 + microsecondes)
+		reader_timestamp = tag.get("LastSeenTimestampUTC") or tag.get("FirstSeenTimestampUTC") or tag.get("Timestamp")
+		print(f"[{reader_timestamp}] EPC={epc} | RSSI={rssi} | ANT={ant_id} | Seen={seen}")
+		if reader_timestamp and isinstance(reader_timestamp, (int, float)):
+			try:
+				# Diviser par 1e6 pour obtenir les secondes (format Impinj: secondes*1e6 + µs)
+				ts_seconds = int(reader_timestamp) // 1000000
+				# convertit automatiquement l'heure du lecteur impinj en heure locale et formate l'affichage
+				ts_str = datetime.fromtimestamp(ts_seconds).strftime("%H:%M:%S.%f")[:-3]
+			except (ValueError, OSError, OverflowError):
+				ts_str = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+		else:
+			ts_str = datetime.now().strftime("%H:%M:%S.%f")[:-3]
 
 		# Stockage dans le fichier JSON
-		enregistrer_tag(epc, rssi, ant_id, seen)
-		#si epc commence par 000000
-		if(epc.startswith("b'00000000")):
-			print(f"[{now}] EPC={epc} | RSSI={rssi} | ANT={ant_id} | Seen={seen}")
+		enregistrer_tag(epc, rssi, ant_id, seen, reader_timestamp)
+		
+		print(f"[{ts_str}] EPC={epc} | RSSI={rssi} | ANT={ant_id} | Seen={seen}")
 
 
 # =====================================================================
@@ -262,6 +284,9 @@ def run_inventory(ip: str, port: int, timeout: float, antennas: list[int],
 		print(f"[ERREUR] Impossible d'importer sllurp ({exc.__class__.__name__}): {exc}")
 		return 10
 
+	# Sauvegarde automatique de la config utilisée
+	sauvegarder_config(ip, port, timeout, antennas, duration, afficher_antennes)
+
 	print(f"Connexion LLRP a {ip}:{port} (antennes={','.join(str(a) for a in antennas)})...")
 	print("Lecture des tags en cours (Ctrl+C pour arreter).")
 
@@ -274,18 +299,14 @@ def run_inventory(ip: str, port: int, timeout: float, antennas: list[int],
 		{
 			"start_inventory": True,
 			"report_every_n_tags": 1,
-			"tag_content_selector": {
-				"EnableAntennaID": True,
-				"EnablePeakRSSI": True,
-				"EnableTagSeenCount": True,
-			},
 			"antennas": antennas,
 			"duration": None if duration == 0 else duration,
 			"reconnect": False,
 			"disconnect_when_done": False if duration == 0 else True,
-			"EnableFirstSeenTimestamp": True,
-			"EnableLastSeenTimestamp": True,
-			"EnableTagSeenCount": True,
+			'EnablePeakRSSI': True,
+			'EnableFirstSeenTimestamp': True,
+			'EnableLastSeenTimestamp': True,
+			'EnableTagSeenCount': True
 		}
 	)
 
@@ -300,32 +321,18 @@ def run_inventory(ip: str, port: int, timeout: float, antennas: list[int],
 	client.add_disconnected_callback(on_disconnected)
 
 	try:
-		if stop_event is not None and stop_event.is_set():
-			print("Arret demande par l'utilisateur.")
-			return 0
 		client.connect()
 		while not disconnected.is_set():
 			if stop_event is not None and stop_event.is_set():
-				print("\nArret demande par l'utilisateur.")
-				try:
-					client.stop_rospec()
-				except Exception:
-					pass
 				try:
 					client.disconnect()
 				except Exception:
 					pass
-				disconnected.set()
 				break
 			time.sleep(0.2)
 		return 0
 	except KeyboardInterrupt:
 		print("\nArret demande par l'utilisateur.")
-		try:
-			client.stop_rospec()
-		except Exception:
-			pass
-
 		try:
 			client.disconnect()
 		except Exception:
@@ -333,10 +340,6 @@ def run_inventory(ip: str, port: int, timeout: float, antennas: list[int],
 		return 0
 	except Exception as exc:
 		print(f"[ERREUR] Inventaire impossible ({exc.__class__.__name__}): {exc}")
-		try:
-			client.stop_rospec()
-		except Exception:
-			pass
 		try:
 			client.disconnect()
 		except Exception:
