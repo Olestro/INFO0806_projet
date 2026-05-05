@@ -16,7 +16,6 @@ from html import escape
 import pandas as pd
 import threading
 from contextlib import redirect_stdout, redirect_stderr
-import uuid
 from connexion_decodeur import (
     load_json, save_json, valider_parametres, sauvegarder_preset,
     charger_preset, supprimer_preset, lister_presets, parse_antennas,
@@ -46,14 +45,8 @@ CONFIG_FILE = SCRIPT_DIR / "config.json"
 WHITELIST_FILE = SCRIPT_DIR / "whitelist.json"
 LIVE_LOG_FILE = SCRIPT_DIR / "rfid_terminal_live.log"
 ARCHIVE_LOG_FILE = SCRIPT_DIR / "rfid_terminal_archive.log"
-SCAN_STATE_FILE = SCRIPT_DIR / "scan_state.json"
-SCAN_THREADS: dict[str, threading.Thread] = {}
-SCAN_STOP_EVENTS: dict[str, threading.Event] = {}
-SCAN_STATUS: dict[str, str] = {}
-
-
-def _get_stop_flag_path(session_uid: str) -> Path:
-    return SCRIPT_DIR / f"scan_stop_{session_uid}.flag"
+_SCAN_STATE = {"status": "idle"}
+_SCAN_LOCK = threading.Lock()
 
 def normalize_epc(value: str) -> str:
     """Normalise un EPC pour comparaison robuste."""
@@ -255,10 +248,13 @@ def _render_mode_brut_terminal_content(max_lines: int, source: str) -> None:
     st.markdown(terminal_html, unsafe_allow_html=True)
 
 
-def _get_session_uid() -> str:
-    if "session_uid" not in st.session_state:
-        st.session_state.session_uid = str(uuid.uuid4())
-    return st.session_state.session_uid
+def _init_scan_state() -> None:
+    if "scan_thread" not in st.session_state:
+        st.session_state.scan_thread = None
+    if "scan_stop_event" not in st.session_state:
+        st.session_state.scan_stop_event = None
+    if "scan_status" not in st.session_state:
+        st.session_state.scan_status = "idle"
 
 
 def _parse_record_datetime(value) -> datetime | None:
@@ -405,58 +401,16 @@ def _render_classic_tag_table(raw_tags: list[dict], debounce_minutes: int) -> pd
     return _build_classic_tag_table(raw_tags, debounce_seconds, load_epc_correspondence())
 
 
-def _write_scan_state(
-    status: str,
-    session_uid: str,
-    preset_name: str | None,
-    pid: int | None = None,
-) -> None:
-    payload = {
-        "status": status,
-        "session_uid": session_uid,
-        "preset_name": preset_name or "",
-        "updated_at": time.time(),
-    }
-    if pid is not None:
-        payload["pid"] = pid
-    save_json(SCAN_STATE_FILE, payload)
-
-
-def _clear_scan_state() -> None:
-    if SCAN_STATE_FILE.exists():
-        SCAN_STATE_FILE.unlink()
-
-
-def _read_scan_state(max_age_s: float = 5.0) -> dict | None:
-    if not SCAN_STATE_FILE.exists() or SCAN_STATE_FILE.stat().st_size == 0:
-        return None
-    try:
-        payload = load_json(SCAN_STATE_FILE)
-    except Exception:
-        return None
-    if not isinstance(payload, dict):
-        return None
-    updated_at = payload.get("updated_at")
-    if not isinstance(updated_at, (int, float)):
-        return None
-    if time.time() - updated_at > max_age_s:
-        return None
-    return payload
-
-
-def _run_scan_thread(
+def _scan_worker(
     cfg: dict,
-    preset_name: str,
-    session_uid: str,
     stop_event: threading.Event,
     completion_message: str,
 ) -> None:
-    SCAN_STATUS[session_uid] = "running"
-    _write_scan_state("running", session_uid, preset_name)
+    with _SCAN_LOCK:
+        _SCAN_STATE["status"] = "running"
 
     append_terminal_log(
-        f"Demarrage scan preset='{preset_name}' "
-        f"ip={cfg['ip']} port={cfg['port']} antennas={cfg['antennas']} duration={cfg['duration']}"
+        f"Demarrage scan ip={cfg['ip']} port={cfg['port']} antennas={cfg['antennas']} duration={cfg['duration']}"
     )
 
     terminal_stream = TerminalLogStream()
@@ -481,109 +435,58 @@ def _run_scan_thread(
     except Exception as exc:
         append_terminal_log(f"Exception scan: {exc}")
     finally:
-        stop_event.set()
-        SCAN_STATUS[session_uid] = "idle"
-        _clear_scan_state()
-        SCAN_THREADS.pop(session_uid, None)
-        SCAN_STOP_EVENTS.pop(session_uid, None)
+        with _SCAN_LOCK:
+            _SCAN_STATE["status"] = "idle"
 
 
-def _start_background_scan(cfg: dict, preset_name: str, completion_message: str) -> bool:
-    session_uid = _get_session_uid()
-    existing_thread = SCAN_THREADS.get(session_uid)
-    if existing_thread is not None and existing_thread.is_alive():
-        append_terminal_log("Redemarrage demande: arret du scan en cours...")
-        _stop_scan()
-        deadline = time.time() + 3.0
-        while existing_thread.is_alive() and time.time() < deadline:
-            time.sleep(0.1)
-        if existing_thread.is_alive():
-            append_terminal_log("Echec redemarrage: scan toujours actif.")
-            return False
-
-    SCAN_STATUS[session_uid] = "starting"
-    _write_scan_state("starting", session_uid, preset_name)
-    st.session_state.scan_started_at = datetime.now().isoformat()
-    st.session_state.scan_preset_name = preset_name
+def _start_scan(cfg: dict, completion_message: str) -> bool:
+    thread = st.session_state.scan_thread
+    if thread is not None and thread.is_alive():
+        return False
 
     stop_event = threading.Event()
-    SCAN_STOP_EVENTS[session_uid] = stop_event
     thread = threading.Thread(
-        target=_run_scan_thread,
-        args=(cfg, preset_name, session_uid, stop_event, completion_message),
+        target=_scan_worker,
+        args=(cfg, stop_event, completion_message),
         daemon=True,
     )
-    SCAN_THREADS[session_uid] = thread
+    st.session_state.scan_stop_event = stop_event
+    st.session_state.scan_thread = thread
+    st.session_state.scan_status = "starting"
+    with _SCAN_LOCK:
+        _SCAN_STATE["status"] = "starting"
     thread.start()
     return True
 
 
-def _start_classic_scan(cfg: dict, preset_name: str) -> bool:
-    return _start_background_scan(cfg, preset_name, "Scan termine avec succes (mode classique)")
-
-
-def _is_scan_running() -> bool:
-    session_uid = _get_session_uid()
-    thread = SCAN_THREADS.get(session_uid)
-    return thread is not None and thread.is_alive()
-
-
 def _stop_scan() -> bool:
-    session_uid = _get_session_uid()
-    thread = SCAN_THREADS.get(session_uid)
-    stop_event = SCAN_STOP_EVENTS.get(session_uid)
+    stop_event = st.session_state.scan_stop_event
+    thread = st.session_state.scan_thread
 
     if thread is None or not thread.is_alive():
-        SCAN_STATUS[session_uid] = "idle"
-        _clear_scan_state()
+        st.session_state.scan_status = "idle"
+        with _SCAN_LOCK:
+            _SCAN_STATE["status"] = "idle"
         return False
 
-    SCAN_STATUS[session_uid] = "stopping"
-    _write_scan_state("stopping", session_uid, st.session_state.get("scan_preset_name"))
-
+    st.session_state.scan_status = "stopping"
+    with _SCAN_LOCK:
+        _SCAN_STATE["status"] = "stopping"
     if stop_event is not None:
         stop_event.set()
-
     append_terminal_log("Demande d'arret du scan en cours.")
-    thread.join(timeout=2.0)
-    if thread.is_alive():
-        append_terminal_log("Scan toujours actif apres demande d'arret.")
-    else:
-        SCAN_THREADS.pop(session_uid, None)
-        SCAN_STOP_EVENTS.pop(session_uid, None)
-        SCAN_STATUS[session_uid] = "idle"
-        _clear_scan_state()
     return True
-
-
-def _is_classic_scan_running() -> bool:
-    return _is_scan_running()
 
 
 def _get_scan_status() -> str:
     """Retourne l'etat du scan pour la session courante."""
-    session_uid = _get_session_uid()
-    status = SCAN_STATUS.get(session_uid, "idle")
-    thread = SCAN_THREADS.get(session_uid)
-    stop_event = SCAN_STOP_EVENTS.get(session_uid)
-
-    state_payload = _read_scan_state(max_age_s=10.0)
-    if state_payload:
-        file_status = state_payload.get("status")
-        file_session_uid = state_payload.get("session_uid")
-        if file_session_uid:
-            stop_flag_path = _get_stop_flag_path(str(file_session_uid))
-        if file_status in {"starting", "running", "stopping", "idle"}:
-            return file_status
-
-    if thread is not None and thread.is_alive():
-        if stop_event is not None and stop_event.is_set():
-            return "stopping"
-        return "running"
-
-    if status in {"starting", "running", "stopping"}:
-        return "idle"
-    return status
+    thread = st.session_state.scan_thread
+    with _SCAN_LOCK:
+        shared_status = _SCAN_STATE["status"]
+    if thread is not None and thread.is_alive() and shared_status == "idle":
+        shared_status = "running"
+    st.session_state.scan_status = shared_status
+    return shared_status
 
 
 def _render_scan_status_badge(status: str) -> None:
@@ -625,10 +528,7 @@ if "global_rx" not in st.session_state:
     st.session_state.global_rx = -80.0
 if "use_whitelist" not in st.session_state:
     st.session_state.use_whitelist = True
-if "scan_started_at" not in st.session_state:
-    st.session_state.scan_started_at = None
-if "scan_preset_name" not in st.session_state:
-    st.session_state.scan_preset_name = None
+_init_scan_state()
 
 
 # ────────────────────────────────────────────────────────────────────
@@ -865,15 +765,22 @@ def page_accueil():
             if cfg:
                 scan_status = _get_scan_status()
                 active = scan_status in {"starting", "running", "stopping"}
-                button_label = "🚀 Redemarrer" if active else "🚀 Demarrer"
-                stop_disabled = not active
-                if st.button(button_label, type="primary", use_container_width=True, key="btn_start_scan"):
-                    if _start_background_scan(cfg, st.session_state.current_preset, "Scan termine avec succes"):
+                if st.button(
+                    "🚀 Demarrer",
+                    type="primary",
+                    use_container_width=True,
+                    key="btn_start_scan",
+                    disabled=active,
+                ):
+                    if _start_scan(cfg, "Scan termine avec succes"):
                         st.success("✅ Scan lancé en arrière-plan")
                         st.rerun()
-                    else:
-                        st.warning("Impossible de redemarrer: scan toujours actif.")
-                if st.button("⏹ Arreter le scan", use_container_width=True, key="btn_stop_scan", disabled=stop_disabled):
+                if st.button(
+                    "⏹ Arreter le scan",
+                    use_container_width=True,
+                    key="btn_stop_scan",
+                    disabled=not active,
+                ):
                     if _stop_scan():
                         st.info("Arrêt du scan demandé.")
                         st.rerun()
@@ -962,16 +869,14 @@ def page_mode_classique():
                 scan_col1, scan_col2 = st.columns([1, 1])
                 with scan_col1:
                     active = scan_status in {"starting", "running", "stopping"}
-                    button_label = "🚀 Redemarrer le scan live" if active else "🚀 Demarrer le scan live"
                     if st.button(
-                        button_label,
+                        "🚀 Demarrer le scan live",
                         type="primary",
                         use_container_width=True,
+                        disabled=active,
                     ):
-                        if _start_classic_scan(cfg, st.session_state.current_preset):
+                        if _start_scan(cfg, "Scan termine avec succes (mode classique)"):
                             st.rerun()
-                        else:
-                            st.warning("Impossible de redemarrer: scan toujours actif.")
                 with scan_col2:
                     if st.button(
                         "⏹ Arreter le scan",
@@ -1167,15 +1072,22 @@ def page_mode_brut():
             if cfg:
                 scan_status = _get_scan_status()
                 active = scan_status in {"starting", "running", "stopping"}
-                button_label = "🚀 Redemarrer" if active else "🚀 Demarrer"
-                stop_disabled = not active
-                if st.button(button_label, type="primary", use_container_width=True, key="btn_start_scan_brut"):
-                    if _start_background_scan(cfg, st.session_state.current_preset, "Scan termine avec succes"):
+                if st.button(
+                    "🚀 Demarrer",
+                    type="primary",
+                    use_container_width=True,
+                    key="btn_start_scan_brut",
+                    disabled=active,
+                ):
+                    if _start_scan(cfg, "Scan termine avec succes"):
                         st.success("✅ Scan lancé en arrière-plan")
                         st.rerun()
-                    else:
-                        st.warning("Impossible de redemarrer: scan toujours actif.")
-                if st.button("⏹ Arreter le scan", use_container_width=True, key="btn_stop_scan_brut", disabled=stop_disabled):
+                if st.button(
+                    "⏹ Arreter le scan",
+                    use_container_width=True,
+                    key="btn_stop_scan_brut",
+                    disabled=not active,
+                ):
                     if _stop_scan():
                         st.info("Arrêt du scan demandé.")
                         st.rerun()
