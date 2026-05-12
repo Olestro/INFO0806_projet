@@ -1,10 +1,3 @@
-"""Application Streamlit pour la gestion de lecteur RFID Impinj R220.
-
-Interface complète pour:
-- Gérer les presets (créer, charger, supprimer)
-- Visualiser les Mode Classique lus
-- Lancer des scans
-"""
 
 import re
 import streamlit as st
@@ -16,6 +9,7 @@ from html import escape
 import pandas as pd
 import threading
 from contextlib import redirect_stdout, redirect_stderr
+import connexion_decodeur
 from connexion_decodeur import (
     load_json, save_json, valider_parametres, sauvegarder_preset,
     charger_preset, supprimer_preset, lister_presets, parse_antennas,
@@ -39,14 +33,20 @@ st.set_page_config(
 # ────────────────────────────────────────────────────────────────────
 
 SCRIPT_DIR = Path(__file__).parent
-PRESETS_FILE = SCRIPT_DIR / "presets.json"
+BOOTSTRAP_PRESETS_FILE = SCRIPT_DIR / "presets.json"
+PRESETS_FILE = BOOTSTRAP_PRESETS_FILE
 TAGS_FILE = SCRIPT_DIR / "tags.json"
-CONFIG_FILE = SCRIPT_DIR / "config.json"
+BASE_CONFIG_FILE = SCRIPT_DIR / "config.json"
+CONFIG_FILE = BASE_CONFIG_FILE
 WHITELIST_FILE = SCRIPT_DIR / "whitelist.json"
 LIVE_LOG_FILE = SCRIPT_DIR / "rfid_terminal_live.log"
 ARCHIVE_LOG_FILE = SCRIPT_DIR / "rfid_terminal_archive.log"
 _SCAN_STATE = {"status": "idle"}
 _SCAN_LOCK = threading.Lock()
+
+# ────────────────────────────────────────────────────────────────────
+# fonctions interne à l'interface Streamlit
+# ────────────────────────────────────────────────────────────────────
 
 def normalize_epc(value: str) -> str:
     """Normalise un EPC pour comparaison robuste."""
@@ -501,15 +501,101 @@ def _render_scan_status_badge(status: str) -> None:
         st.info("⏸️ Aucun scan détecté")
 
 
+def _normalize_json_filename(value: str, default_name: str) -> str:
+    name = str(value or "").strip()
+    if not name:
+        return default_name
+    name = Path(name).name
+    if not name.lower().endswith(".json"):
+        name = f"{name}.json"
+    return name
+
+
+def _load_presets_root(path: Path) -> dict:
+    raw = load_json(path)
+    if isinstance(raw, dict) and isinstance(raw.get("presets"), dict):
+        root = dict(raw)
+    elif isinstance(raw, dict):
+        root = {"presets": dict(raw)}
+    else:
+        root = {"presets": {}}
+
+    if not isinstance(root.get("presets"), dict):
+        root["presets"] = {}
+    return root
+
+
+def _get_presets_map(path: Path) -> dict:
+    return _load_presets_root(path).get("presets", {})
+
+
+def _load_storage_preferences_from_presets(preset_name: str | None = None) -> dict[str, str]:
+    """Lit les prefs depuis presets.json.
+
+    Source unique: preset.storage_preferences.
+    """
+    try:
+        return connexion_decodeur.get_storage_preferences(preset_name)
+    except Exception:
+        return {}
+
+
+def _save_storage_preferences_to_presets(presets_name: str, tags_name: str, config_name: str) -> None:
+    prefs = {
+        "presets_filename": presets_name,
+        "tags_filename": tags_name,
+        "config_filename": config_name,
+    }
+    # 1) Bootstrapping: pointeur vers le fichier presets actif (sans dupliquer storage_preferences)
+    try:
+        bootstrap_root = _load_presets_root(BOOTSTRAP_PRESETS_FILE)
+        bootstrap_root["active_presets_filename"] = presets_name
+        save_json(BOOTSTRAP_PRESETS_FILE, bootstrap_root)
+    except Exception:
+        pass
+
+    # 2) Dans le preset actif uniquement
+    try:
+        current = st.session_state.get("current_preset")
+        if current:
+            connexion_decodeur.update_preset_storage_preferences(current, prefs)
+    except Exception:
+        pass
+
+
+def _save_active_presets_filename(name: str) -> None:
+    """Persiste le nom du fichier presets actif dans le fichier bootstrap."""
+    try:
+        bootstrap_root = _load_presets_root(BOOTSTRAP_PRESETS_FILE)
+        bootstrap_root["active_presets_filename"] = name
+        save_json(BOOTSTRAP_PRESETS_FILE, bootstrap_root)
+    except Exception:
+        pass
+
+
+def _apply_storage_paths() -> None:
+    global PRESETS_FILE, TAGS_FILE, CONFIG_FILE
+    PRESETS_FILE = SCRIPT_DIR / st.session_state.presets_filename
+    TAGS_FILE = SCRIPT_DIR / st.session_state.tags_filename
+    CONFIG_FILE = SCRIPT_DIR / st.session_state.config_filename
+    connexion_decodeur.PRESETS_FILE = PRESETS_FILE
+    connexion_decodeur.TAGS_FILE = TAGS_FILE
+    connexion_decodeur.CONFIG_FILE = CONFIG_FILE
+
+
 
 # ────────────────────────────────────────────────────────────────────
 # Initialisation Session State
 # ────────────────────────────────────────────────────────────────────
 
+# 1) Bootstrapping: on lit les préférences globales depuis presets.json (fixe)
+bootstrap_root = _load_presets_root(BOOTSTRAP_PRESETS_FILE)
+active_presets_filename = None
+if isinstance(bootstrap_root, dict):
+    active_presets_filename = bootstrap_root.get("active_presets_filename")
+
 if "current_preset" not in st.session_state:
     st.session_state.current_preset = None
-if "scan_running" not in st.session_state:
-    st.session_state.scan_running = False
 if "tags_data" not in st.session_state:
     st.session_state.tags_data = []
 if "main_ip" not in st.session_state:
@@ -528,7 +614,46 @@ if "global_rx" not in st.session_state:
     st.session_state.global_rx = -80.0
 if "use_whitelist" not in st.session_state:
     st.session_state.use_whitelist = True
+if "presets_filename" not in st.session_state:
+    st.session_state.presets_filename = _normalize_json_filename(
+        active_presets_filename,
+        BOOTSTRAP_PRESETS_FILE.name,
+    )
+
+# 2) Important: met à jour PRESETS_FILE/connexion_decodeur.PRESETS_FILE avant de lire last_used_preset
+connexion_decodeur.PRESETS_FILE = SCRIPT_DIR / st.session_state.presets_filename
+PRESETS_FILE = connexion_decodeur.PRESETS_FILE
+
+# 3) Déterminer le preset à charger automatiquement (si indiqué)
+try:
+    _last_used = connexion_decodeur.get_last_used_preset()
+except Exception:
+    _last_used = None
+
+# 4) Préférences de stockage: si le dernier preset définit des prefs, elles priment
+storage_prefs = _load_storage_preferences_from_presets(_last_used)
+if "tags_filename" not in st.session_state:
+    st.session_state.tags_filename = _normalize_json_filename(
+        storage_prefs.get("tags_filename"),
+        TAGS_FILE.name,
+    )
+if "config_filename" not in st.session_state:
+    st.session_state.config_filename = _normalize_json_filename(
+        storage_prefs.get("config_filename"),
+        CONFIG_FILE.name,
+    )
+if "presets_filename_input" not in st.session_state:
+    st.session_state.presets_filename_input = st.session_state.presets_filename
+if "tags_filename_input" not in st.session_state:
+    st.session_state.tags_filename_input = st.session_state.tags_filename
+if "config_filename_input" not in st.session_state:
+    st.session_state.config_filename_input = st.session_state.config_filename
 _init_scan_state()
+_apply_storage_paths()
+
+# 5) Prépare le chargement auto du dernier preset (avant création des widgets)
+if _last_used and "preset_to_apply" not in st.session_state and not st.session_state.get("current_preset"):
+    st.session_state.preset_to_apply = _last_used
 
 
 # ────────────────────────────────────────────────────────────────────
@@ -537,28 +662,6 @@ _init_scan_state()
 
 def page_accueil():
     """Page d'accueil: gestion des presets et paramètres du lecteur."""
-    # Applique un preset au debut du run pour pouvoir mettre a jour les widgets sans erreur Streamlit.
-    if "preset_to_apply" in st.session_state:
-        preset_to_apply = st.session_state.pop("preset_to_apply")
-        cfg = charger_preset(preset_to_apply)
-        if cfg:
-            st.session_state.current_preset = preset_to_apply
-            st.session_state.main_ip = cfg.get("ip", DEFAULT_IP)
-            st.session_state.main_port = cfg.get("port", DEFAULT_PORT)
-            st.session_state.main_timeout = cfg.get("timeout", DEFAULT_TIMEOUT)
-            st.session_state.main_antennas = ",".join(str(a) for a in cfg.get("antennas", DEFAULT_ANTENNAS))
-            st.session_state.main_duration = cfg.get("duration", 0)
-            st.session_state.global_tx = cfg.get("global_tx_power", 31.5)
-            st.session_state.global_rx = cfg.get("global_rx_sensitivity", -80.0)
-
-            antenna_cfg = cfg.get("antenna_params", {})
-            for ant in cfg.get("antennas", []):
-                ant_cfg = antenna_cfg.get(str(ant), antenna_cfg.get(ant, {}))
-                st.session_state[f"ant_{ant}_tx"] = ant_cfg.get("tx_power", st.session_state.global_tx)
-                st.session_state[f"ant_{ant}_rx"] = ant_cfg.get("rx_sensitivity", st.session_state.global_rx)
-
-            st.session_state.load_feedback = f"✅ '{preset_to_apply}' chargé!"
-
     st.title("📡 Centre de Contrôle RFID")
     st.markdown("---")
     
@@ -625,16 +728,26 @@ def page_accueil():
                     col_a1, col_a2 = st.columns(2)
                     
                     with col_a1:
+                        tx_key = f"ant_{ant}_tx"
+                        tx_value = global_tx_power if tx_key not in st.session_state else st.session_state[tx_key]
                         tx = st.slider(
-                            f"Tx Power :",
-                            min_value=0.0, max_value=31.5, value=global_tx_power, step=0.5,
-                            key=f"ant_{ant}_tx"
+                            "Tx Power :",
+                            min_value=0.0,
+                            max_value=31.5,
+                            value=tx_value,
+                            step=0.5,
+                            key=tx_key,
                         )
                     with col_a2:
+                        rx_key = f"ant_{ant}_rx"
+                        rx_value = global_rx_sensitivity if rx_key not in st.session_state else st.session_state[rx_key]
                         rx = st.slider(
-                            f"Rx Sensitivity :",
-                            min_value=-100.0, max_value=0.0, value=global_rx_sensitivity, step=0.5,
-                            key=f"ant_{ant}_rx"
+                            "Rx Sensitivity :",
+                            min_value=-100.0,
+                            max_value=0.0,
+                            value=rx_value,
+                            step=0.5,
+                            key=rx_key,
                         )
                     
                     antenna_params[ant] = {"tx_power": tx, "rx_sensitivity": rx}
@@ -648,7 +761,7 @@ def page_accueil():
         # Section 1: Charger un Preset
         with st.container(border=True):
             st.markdown("### 📥 Charger un Preset")
-            presets = load_json(PRESETS_FILE)
+            presets = connexion_decodeur.get_presets()
             
             if not presets:
                 st.info("Aucun preset disponible")
@@ -681,6 +794,12 @@ def page_accueil():
         with st.container(border=True):
             st.markdown("### 💾 Sauvegarder un Preset")
             preset_name_save = st.text_input("Nom du preset :", placeholder="mon_preset", key="save_name")
+
+            set_as_last = st.checkbox(
+                "⭐ Définir comme preset chargé au démarrage",
+                value=True,
+                key="save_set_as_last",
+            )
             
             if st.button("💾 Sauvegarder", type="primary", use_container_width=True, key="btn_save"):
                 if not preset_name_save:
@@ -703,7 +822,13 @@ def page_accueil():
                                 antennas, duration, False,
                                 global_tx_power=global_tx_power,
                                 global_rx_sensitivity=global_rx_sensitivity,
-                                antenna_params=antenna_params
+                                antenna_params=antenna_params,
+                                storage_preferences={
+                                    "presets_filename": st.session_state.presets_filename,
+                                    "tags_filename": st.session_state.tags_filename,
+                                    "config_filename": st.session_state.config_filename,
+                                },
+                                set_as_last=set_as_last,
                             )
                             st.success(f"✅ Preset '{preset_name_save}' créé!")
                             st.rerun()
@@ -713,7 +838,7 @@ def page_accueil():
         # Section 3: Supprimer un Preset
         with st.container(border=True):
             st.markdown("### 🗑️ Supprimer un Preset")
-            presets = load_json(PRESETS_FILE)
+            presets = connexion_decodeur.get_presets()
             
             if not presets:
                 st.info("Aucun preset à supprimer")
@@ -735,8 +860,7 @@ def page_accueil():
     
     # Section Lancer le Scan
     st.subheader("▶️ Lancer un Scan RFID")
-    
-    presets = load_json(PRESETS_FILE)
+
     col_scan1, col_scan2 = st.columns([2, 1])
     
     with col_scan1:
@@ -814,6 +938,10 @@ def page_mode_classique():
         st.session_state.classique_auto_refresh = True
     if "classique_refresh_interval" not in st.session_state:
         st.session_state.classique_refresh_interval = 3
+    if "classique_last_raw_tags" not in st.session_state:
+        st.session_state.classique_last_raw_tags = []
+    if "classique_last_df_live" not in st.session_state:
+        st.session_state.classique_last_df_live = pd.DataFrame()
 
     debounce_minutes = st.slider(
         "Fenêtre de non-relecture (minutes)",
@@ -851,7 +979,7 @@ def page_mode_classique():
                 st.rerun()
 
         scan_status = _get_scan_status()
-        _render_scan_status_badge(scan_status)
+        # _render_scan_status_badge(scan_status)
 
         if st.session_state.current_preset:
             cfg = charger_preset(st.session_state.current_preset)
@@ -890,15 +1018,20 @@ def page_mode_classique():
         else:
             st.warning("Charge d'abord un preset dans l'onglet Accueil pour lancer un scan live.")
 
+        read_error = False
         try:
             raw_tags = _load_tags_payload()
             if whitelist_enabled:
                 raw_tags = filter_tags_with_whitelist(raw_tags, whitelist_epcs)
             df_live = _render_classic_tag_table(raw_tags, debounce_minutes)
+            st.session_state.classique_last_raw_tags = raw_tags
+            st.session_state.classique_last_df_live = df_live
         except ValueError as exc:
-            st.error(str(exc))
-            raw_tags = []
-            df_live = pd.DataFrame()
+            # Typiquement JSONDecodeError si tags.json est lu pendant qu'il est ecrit.
+            read_error = True
+            raw_tags = st.session_state.classique_last_raw_tags
+            df_live = st.session_state.classique_last_df_live
+            st.caption(f"Lecture en cours (fichier en ecriture): {exc}")
 
         if st.session_state.classique_auto_refresh and scan_status in {"starting", "running", "stopping"}:
             time.sleep(refresh_interval)
@@ -913,7 +1046,13 @@ def page_mode_classique():
             st.metric("Fenêtre", f"{debounce_minutes} min")
 
         if df_live.empty:
-            st.info("Aucune lecture disponible pour le moment.")
+            if scan_status in {"starting", "running", "stopping"}:
+                if read_error:
+                    st.info("Scan actif: lecture temporairement indisponible (ecriture en cours).")
+                else:
+                    st.info("Scan actif: en attente de lectures...")
+            else:
+                st.info("Aucune lecture disponible pour le moment.")
         else:
             st.dataframe(df_live, use_container_width=True, hide_index=True)
 
@@ -960,6 +1099,39 @@ def page_configuration():
     """Page de configuration de l'application."""
     st.title("⚙️ Configuration")
     st.markdown("---")
+
+    st.subheader("📝 Noms des fichiers")
+    st.caption("Definis les noms des fichiers utilises pour le stockage local.")
+
+    name_col1, name_col2, name_col3 = st.columns(3)
+    with name_col1:
+        st.text_input("Presets (.json)", key="presets_filename_input")
+    with name_col2:
+        st.text_input("Tags (.json)", key="tags_filename_input")
+    with name_col3:
+        st.text_input("Configuration (.json)", key="config_filename_input")
+
+    if st.button("💾 Appliquer les noms", use_container_width=True):
+        new_presets_name = _normalize_json_filename(
+            st.session_state.presets_filename_input,
+            PRESETS_FILE.name,
+        )
+        new_tags_name = _normalize_json_filename(
+            st.session_state.tags_filename_input,
+            TAGS_FILE.name,
+        )
+        new_config_name = _normalize_json_filename(
+            st.session_state.config_filename_input,
+            CONFIG_FILE.name,
+        )
+
+        st.session_state.presets_filename = new_presets_name
+        st.session_state.tags_filename = new_tags_name
+        st.session_state.config_filename = new_config_name
+        _apply_storage_paths()
+        _save_storage_preferences_to_presets(new_presets_name, new_tags_name, new_config_name)
+        st.success("Noms mis a jour.")
+        st.rerun()
     
     st.subheader("💾 Stockage des Données")
     
@@ -970,18 +1142,6 @@ def page_configuration():
         st.metric("Fichier Tags", TAGS_FILE.name)
         st.metric("Fichier Config", CONFIG_FILE.name)
     
-    with col2:
-        # Vérifier l'existence des fichiers
-        presets_exists = "✅ Existe" if PRESETS_FILE.exists() else "❌ N'existe pas"
-        tags_exists = "✅ Existe" if TAGS_FILE.exists() else "❌ N'existe pas"
-        config_exists = "✅ Existe" if CONFIG_FILE.exists() else "❌ N'existe pas"
-        
-        st.info(f"""
-        **État des fichiers:**
-        - Presets: {presets_exists}
-        - Tags: {tags_exists}
-        - Config: {config_exists}
-        """)
     
     st.markdown("---")
     st.subheader("🔧 Gestion des Données")
@@ -1000,14 +1160,7 @@ def page_configuration():
             st.success("✅ Tous les tags ont été supprimés!")
             st.rerun()
     
-    st.markdown("---")
-    st.subheader("ℹ️ À Propos")
-    st.info("""
-    **Application RFID Reader Manager**
-    - Interface Streamlit pour Impinj R220
-    - Gestion des presets et visualisation des tags
-    - Version: 1.0
-    """)
+    
     
     # Preset actuellement chargé
     if st.session_state.current_preset:
@@ -1186,14 +1339,16 @@ def page_mode_graphique():
         return
 
     df["timestamp_dt"] = pd.to_datetime(df[ts_col], errors="coerce")
-    df["epc"] = df.get("epc", "N/A").astype(str)
+    df["epc"] = df.get("epc", "").astype(str).str.strip()
+    df = df[df["epc"] != ""].copy()
     df["epc_norm"] = df["epc"].map(normalize_epc)
     df["coureur"] = df["epc"].map(lambda epc: get_epc_name(epc, correspondence))
     df["tag_label"] = df["epc"].map(lambda epc: format_epc_label(epc, correspondence))
     df["antenna"] = pd.to_numeric(df.get("antenna", 0), errors="coerce").fillna(0).astype(int)
     df["rssi"] = pd.to_numeric(df.get("rssi", 0), errors="coerce")
     df["seen_count"] = pd.to_numeric(df.get("seen_count", 1), errors="coerce").fillna(1)
-    df["passages"] = df["seen_count"].clip(lower=1)
+    # Ignore seen_count: count one passage per kept record (align with Mode Classique).
+    df["passages"] = 1
 
     total_before_whitelist = len(df)
     if whitelist_enabled:
@@ -1212,32 +1367,6 @@ def page_mode_graphique():
             st.warning("Aucun tag du fichier selectionne ne correspond a la whitelist.")
         else:
             st.warning("Aucun tag exploitable dans le fichier selectionne.")
-        return
-
-    # Cooldown anti-surlecture: ignore les lectures trop proches pour un meme EPC/antenne.
-    st.subheader("Parametres RF et Cooldown")
-    with st.container():
-        cooldown_min = st.slider(
-            "Cooldown EPC+antenne (minutes)",
-            min_value=1,
-            max_value=10,
-            value=1,
-            step=1,
-            help="Ignore une lecture si le meme EPC sur la meme antenne est deja passe il y a moins de X minutes."
-        )
-
-    df = df.sort_values("timestamp_dt").copy()
-    cooldown_s = cooldown_min * 60
-    if cooldown_s > 0:
-        prev_ts = df.groupby(["epc_norm", "antenna"])["timestamp_dt"].shift(1)
-        delta_s = (df["timestamp_dt"] - prev_ts).dt.total_seconds()
-        keep_mask = prev_ts.isna() | delta_s.isna() | (delta_s >= cooldown_s)
-        kept = int(keep_mask.sum())
-        df = df[keep_mask].copy()
-        st.caption(f"Cooldown applique: {kept}/{retained_count} lectures conservees.")
-
-    if df.empty:
-        st.warning("Aucune lecture restante apres cooldown.")
         return
 
     # Filtres et tri
@@ -1266,6 +1395,31 @@ def page_mode_graphique():
         filtered = filtered[filtered["antenna"].isin(antenna_filter)]
     if epc_filter:
         filtered = filtered[filtered["tag_label"].isin(epc_filter)]
+    filtered_count = len(filtered)
+
+    # Cooldown anti-surlecture: ignore les lectures trop proches pour un meme EPC.
+    st.subheader("Parametres RF et Cooldown")
+    with st.container():
+        cooldown_min = st.slider(
+            "Cooldown EPC (minutes)",
+            min_value=0,
+            max_value=60,
+            value=1,
+            step=1,
+            help="Ignore une lecture si le meme EPC est deja passe il y a moins de X minutes."
+        )
+
+    filtered = filtered.sort_values("timestamp_dt").copy()
+    cooldown_s = cooldown_min * 60
+    if cooldown_s > 0 and not filtered.empty:
+        # Mode classique: dedoublonnage par EPC uniquement.
+        cooldown_group = ["epc_norm"]
+        prev_ts = filtered.groupby(cooldown_group)["timestamp_dt"].shift(1)
+        delta_s = (filtered["timestamp_dt"] - prev_ts).dt.total_seconds()
+        keep_mask = prev_ts.isna() | delta_s.isna() | (delta_s >= cooldown_s)
+        kept = int(keep_mask.sum())
+        filtered = filtered[keep_mask].copy()
+        st.caption(f"Cooldown applique: {kept}/{filtered_count} lectures conservees.")
 
     if filtered.empty:
         st.warning("Aucune donnee apres filtrage.")
@@ -1547,6 +1701,64 @@ def page_whitelist():
 
 def main():
     """Fonction principale avec navigation."""
+    # Si aucun preset n'est demandé, on tente d'utiliser le dernier preset connu.
+    if "preset_to_apply" not in st.session_state and not st.session_state.get("current_preset"):
+        try:
+            last_used = connexion_decodeur.get_last_used_preset()
+        except Exception:
+            last_used = None
+        if last_used:
+            st.session_state.preset_to_apply = last_used
+
+    # Applique un preset au debut du run pour mettre a jour la sidebar.
+    if "preset_to_apply" in st.session_state:
+        preset_to_apply = st.session_state.pop("preset_to_apply")
+        cfg = charger_preset(preset_to_apply)
+        if cfg:
+            # Marque le preset comme dernier utilise
+            try:
+                connexion_decodeur.set_last_used_preset(preset_to_apply)
+            except Exception:
+                pass
+
+            # Applique aussi les preferences de stockage si presentes dans le preset
+            prefs = cfg.get("storage_preferences") if isinstance(cfg, dict) else None
+            if isinstance(prefs, dict):
+                st.session_state.presets_filename = _normalize_json_filename(
+                    prefs.get("presets_filename"),
+                    st.session_state.presets_filename,
+                )
+                st.session_state.tags_filename = _normalize_json_filename(
+                    prefs.get("tags_filename"),
+                    st.session_state.tags_filename,
+                )
+                st.session_state.config_filename = _normalize_json_filename(
+                    prefs.get("config_filename"),
+                    st.session_state.config_filename,
+                )
+                st.session_state.presets_filename_input = st.session_state.presets_filename
+                st.session_state.tags_filename_input = st.session_state.tags_filename
+                st.session_state.config_filename_input = st.session_state.config_filename
+                _apply_storage_paths()
+                _save_active_presets_filename(st.session_state.presets_filename)
+
+            st.session_state.current_preset = preset_to_apply
+            st.session_state.main_ip = cfg.get("ip", DEFAULT_IP)
+            st.session_state.main_port = cfg.get("port", DEFAULT_PORT)
+            st.session_state.main_timeout = cfg.get("timeout", DEFAULT_TIMEOUT)
+            st.session_state.main_antennas = ",".join(str(a) for a in cfg.get("antennas", DEFAULT_ANTENNAS))
+            st.session_state.main_duration = cfg.get("duration", 0)
+            st.session_state.global_tx = cfg.get("global_tx_power", 31.5)
+            st.session_state.global_rx = cfg.get("global_rx_sensitivity", -80.0)
+
+            antenna_cfg = cfg.get("antenna_params", {})
+            for ant in cfg.get("antennas", []):
+                ant_cfg = antenna_cfg.get(str(ant), antenna_cfg.get(ant, {}))
+                st.session_state[f"ant_{ant}_tx"] = ant_cfg.get("tx_power", st.session_state.global_tx)
+                st.session_state[f"ant_{ant}_rx"] = ant_cfg.get("rx_sensitivity", st.session_state.global_rx)
+
+            st.session_state.load_feedback = f"✅ '{preset_to_apply}' chargé!"
+
     st.sidebar.title("🎯 Menu Principal")
     
     # Afficher le preset actuel dans la sidebar
@@ -1556,16 +1768,7 @@ def main():
         st.sidebar.warning("⚠️ Aucun preset chargé")
     
     st.sidebar.markdown("---")
-    # Indicateur de scan basé sur le thread/etat interne
-    scan_status = _get_scan_status()
-    if scan_status == "running":
-        st.sidebar.success("🔌 Lecteur: scan en cours")
-    elif scan_status == "starting":
-        st.sidebar.info("🔌 Lecteur: lancement en cours")
-    elif scan_status == "stopping":
-        st.sidebar.warning("🔌 Lecteur: arrêt demandé")
-    else:
-        st.sidebar.info("🔌 Lecteur: inactif")
+    
 
     st.sidebar.checkbox(
         "Prendre en compte la whitelist",
@@ -1585,7 +1788,14 @@ def main():
         ["🏠 Accueil", "🚴 Mode Classique", "📊 Mode Graphique", "✅ Whitelist", "⚙️ Configuration", "💻 Mode Brut"],
         index=0
     )
-    
+    st.sidebar.markdown("---")
+    st.sidebar.subheader("ℹ️ À Propos")
+    st.sidebar.info("""
+    **Application RFID Reader Manager**
+    - Interface Streamlit
+    - Version: 1.0
+    - Auteur: KRZANOWSKI Néo & STEPHAN Mathieu
+    """)
     st.sidebar.markdown("---")
     
     # Afficher la page sélectionnée
