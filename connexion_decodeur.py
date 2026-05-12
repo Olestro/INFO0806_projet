@@ -16,7 +16,9 @@ from __future__ import annotations
 import argparse
 import ipaddress
 import json
+import os
 import sys
+import tempfile
 import time
 from datetime import datetime
 from pathlib import Path
@@ -32,7 +34,7 @@ CONFIG_FILE = SCRIPT_DIR / "config.json"
 
 # ── Valeurs par défaut ────────────────────────────────────────────────
 # DEFAULT_IP = "169.254.1.1"
-DEFAULT_IP = "169.254.1.1"
+DEFAULT_IP = "10.42.0.15"
 DEFAULT_PORT = 5084  # Port LLRP standard (lecteurs Impinj)
 DEFAULT_TIMEOUT = 5.0
 DEFAULT_ANTENNAS = [1, 2]
@@ -52,8 +54,106 @@ def load_json(path: Path) -> dict:
 
 def save_json(path: Path, data: dict) -> None:
 	"""Écrit un dictionnaire dans un fichier JSON."""
-	with open(path, "w", encoding="utf-8") as f:
-		json.dump(data, f, indent=2, ensure_ascii=False)
+	path.parent.mkdir(parents=True, exist_ok=True)
+	fd, tmp_name = tempfile.mkstemp(prefix=f"{path.name}.", suffix=".tmp", dir=str(path.parent))
+	try:
+		with os.fdopen(fd, "w", encoding="utf-8") as f:
+			json.dump(data, f, indent=2, ensure_ascii=False)
+			f.flush()
+			os.fsync(f.fileno())
+		Path(tmp_name).replace(path)
+	finally:
+		try:
+			Path(tmp_name).unlink(missing_ok=True)
+		except Exception:
+			pass
+
+
+# =====================================================================
+#  Format presets.json (rétro-compat)
+# =====================================================================
+
+def _normalize_presets_root(raw: object) -> dict:
+	"""Normalise le contenu de presets.json.
+
+	Formats supportés:
+	- Ancien: {"nom": {..preset..}, ...}
+	- Nouveau: {"presets": {"nom": {..}}, "last_used_preset": "nom", "active_presets_filename": "..."}
+	"""
+	if isinstance(raw, dict):
+		if isinstance(raw.get("presets"), dict):
+			root = dict(raw)
+		else:
+			root = {"presets": dict(raw)}
+	else:
+		root = {"presets": {}}
+
+	presets = root.get("presets")
+	if not isinstance(presets, dict):
+		root["presets"] = {}
+	return root
+
+
+def get_presets_root() -> dict:
+	"""Retourne le JSON complet de presets.json dans le format normalisé."""
+	return _normalize_presets_root(load_json(PRESETS_FILE))
+
+
+def get_presets() -> dict:
+	"""Retourne le mapping des presets (nom -> config)."""
+	return get_presets_root()["presets"]
+
+
+def get_last_used_preset() -> Optional[str]:
+	root = get_presets_root()
+	value = root.get("last_used_preset")
+	return value if isinstance(value, str) and value.strip() else None
+
+
+def set_last_used_preset(name: Optional[str]) -> None:
+	root = get_presets_root()
+	if name is None or not str(name).strip():
+		root["last_used_preset"] = None
+	else:
+		root["last_used_preset"] = str(name).strip()
+	save_json(PRESETS_FILE, root)
+
+
+def get_storage_preferences(preset_name: Optional[str] = None) -> dict[str, str]:
+	"""Retourne les préférences de stockage.
+
+	Uniquement depuis le preset demandé.
+	"""
+	if not preset_name:
+		return {}
+	root = get_presets_root()
+	cfg = root["presets"].get(preset_name)
+	if isinstance(cfg, dict):
+		prefs = cfg.get("storage_preferences")
+		if isinstance(prefs, dict):
+			return {
+				"presets_filename": str(prefs.get("presets_filename", "")).strip(),
+				"tags_filename": str(prefs.get("tags_filename", "")).strip(),
+				"config_filename": str(prefs.get("config_filename", "")).strip(),
+			}
+	return {}
+
+
+def update_preset_storage_preferences(preset_name: str, prefs: dict[str, str]) -> bool:
+	"""Met à jour uniquement storage_preferences d'un preset existant.
+
+	Retourne False si le preset n'existe pas.
+	"""
+	root = get_presets_root()
+	if preset_name not in root["presets"] or not isinstance(root["presets"].get(preset_name), dict):
+		return False
+	root["presets"][preset_name]["storage_preferences"] = {
+		"presets_filename": str(prefs.get("presets_filename", "")).strip(),
+		"tags_filename": str(prefs.get("tags_filename", "")).strip(),
+		"config_filename": str(prefs.get("config_filename", "")).strip(),
+	}
+	save_json(PRESETS_FILE, root)
+	return True
 
 
 # =====================================================================
@@ -139,10 +239,16 @@ def sauvegarder_config(ip: str, port: int, timeout: float,
 
 def sauvegarder_preset(name: str, ip: str, port: int, timeout: float,
                        antennas: list[int], duration: int,
-                       afficher_antennes: bool) -> None:
+					   afficher_antennes: bool,
+					   global_tx_power: Optional[float] = None,
+					   global_rx_sensitivity: Optional[float] = None,
+					   antenna_params: Optional[dict] = None,
+					   storage_preferences: Optional[dict[str, str]] = None,
+					   set_as_last: bool = False) -> None:
 	"""Sauvegarde un preset dans presets.json."""
-	presets = load_json(PRESETS_FILE)
-	presets[name] = {
+	root = get_presets_root()
+	presets = root["presets"]
+	preset_data = {
 		"ip": ip,
 		"port": port,
 		"timeout": timeout,
@@ -150,13 +256,32 @@ def sauvegarder_preset(name: str, ip: str, port: int, timeout: float,
 		"duration": duration,
 		"afficher_antennes": afficher_antennes,
 	}
-	save_json(PRESETS_FILE, presets)
+	if global_tx_power is not None:
+		preset_data["global_tx_power"] = global_tx_power
+	if global_rx_sensitivity is not None:
+		preset_data["global_rx_sensitivity"] = global_rx_sensitivity
+	if antenna_params is not None:
+		preset_data["antenna_params"] = antenna_params
+	if storage_preferences is not None:
+		preset_data["storage_preferences"] = {
+			"presets_filename": str(storage_preferences.get("presets_filename", "")).strip(),
+			"tags_filename": str(storage_preferences.get("tags_filename", "")).strip(),
+			"config_filename": str(storage_preferences.get("config_filename", "")).strip(),
+		}
+		# Nettoyage legacy pour éviter le doublon
+		root.pop("storage_preferences", None)
+
+	presets[name] = preset_data
+	if set_as_last:
+		root["last_used_preset"] = name
+	save_json(PRESETS_FILE, root)
 	print(f"Preset '{name}' sauvegarde.")
 
 
 def charger_preset(name: str) -> Optional[dict]:
 	"""Charge un preset depuis presets.json. Retourne None si introuvable."""
-	presets = load_json(PRESETS_FILE)
+	root = get_presets_root()
+	presets = root["presets"]
 	if name not in presets:
 		print(f"[ERREUR] Preset '{name}' introuvable.")
 		return None
@@ -166,19 +291,23 @@ def charger_preset(name: str) -> Optional[dict]:
 
 def supprimer_preset(name: str) -> bool:
 	"""Supprime un preset. Retourne True si succès."""
-	presets = load_json(PRESETS_FILE)
+	root = get_presets_root()
+	presets = root["presets"]
 	if name not in presets:
 		print(f"[ERREUR] Preset '{name}' introuvable.")
 		return False
 	del presets[name]
-	save_json(PRESETS_FILE, presets)
+	if root.get("last_used_preset") == name:
+		root["last_used_preset"] = None
+	save_json(PRESETS_FILE, root)
 	print(f"Preset '{name}' supprime.")
 	return True
 
 
 def lister_presets() -> None:
 	"""Affiche tous les presets enregistrés."""
-	presets = load_json(PRESETS_FILE)
+	root = get_presets_root()
+	presets = root["presets"]
 	if not presets:
 		print("Aucun preset enregistre.")
 		return
@@ -264,7 +393,9 @@ def on_tag_report(_reader, tags, antennas, affiche_antennes=False):
 # =====================================================================
 
 def run_inventory(ip: str, port: int, timeout: float, antennas: list[int],
-                  duration: int, afficher_antennes: bool = False) -> int:
+				  duration: int, afficher_antennes: bool = False,
+				  stop_event: Optional[Event] = None,
+				  client_holder: Optional[dict] = None) -> int:
 	# Validation complète des paramètres
 	erreurs = valider_parametres(ip, port, timeout, antennas, duration)
 	if erreurs:
@@ -301,7 +432,11 @@ def run_inventory(ip: str, port: int, timeout: float, antennas: list[int],
 			"duration": None if duration == 0 else duration,
 			"reconnect": False,
 			"disconnect_when_done": False if duration == 0 else True,
-			'EnablePeakRSSI': True,
+			"tag_content_selector": {
+				"EnableAntennaID": True,
+				"EnablePeakRSSI": True,
+				"EnableTagSeenCount": True,
+			},
 			'EnableFirstSeenTimestamp': True,
 			'EnableLastSeenTimestamp': True,
 			'EnableTagSeenCount': True
@@ -309,6 +444,8 @@ def run_inventory(ip: str, port: int, timeout: float, antennas: list[int],
 	)
 
 	client = LLRPReaderClient(ip, port=port, config=config, timeout=timeout)
+	if client_holder is not None:
+		client_holder["client"] = client
 
 	def tag_report_callback(reader, tags):
 		on_tag_report(reader, tags, antennas, afficher_antennes)
@@ -319,6 +456,12 @@ def run_inventory(ip: str, port: int, timeout: float, antennas: list[int],
 	try:
 		client.connect()
 		while not disconnected.is_set():
+			if stop_event is not None and stop_event.is_set():
+				try:
+					client.disconnect()
+				except Exception:
+					pass
+				break
 			time.sleep(0.2)
 		return 0
 	except KeyboardInterrupt:
