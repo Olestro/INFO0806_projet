@@ -2,3 +2,9 @@
 .vscode/
 config.json
 tags.json
+_pycache__/
+rfid_terminal_archive.log
+rfid_terminal_live.log
+*.docx
+FONCTIONNALITES.txt
+.gitignore
