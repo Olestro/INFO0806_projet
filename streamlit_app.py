@@ -501,6 +501,18 @@ def _render_scan_status_badge(status: str) -> None:
         st.info("⏸️ Aucun scan détecté")
 
 
+def _sync_global_antenna_power() -> None:
+    """Applique les valeurs globales Tx/Rx a toutes les antennes configurees."""
+    try:
+        antennas = parse_antennas(st.session_state.get("main_antennas", ""))
+    except Exception:
+        antennas = DEFAULT_ANTENNAS
+
+    for ant in antennas:
+        st.session_state[f"ant_{ant}_tx"] = st.session_state.get("global_tx", 31.5)
+        st.session_state[f"ant_{ant}_rx"] = st.session_state.get("global_rx", -80.0)
+
+
 def _normalize_json_filename(value: str, default_name: str) -> str:
     name = str(value or "").strip()
     if not name:
@@ -702,13 +714,15 @@ def page_accueil():
                 global_tx_power = st.slider(
                     "Tx Power Global (dBm) :",
                     min_value=0.0, max_value=31.5, step=0.5,
-                    key="global_tx"
+                    key="global_tx",
+                    on_change=_sync_global_antenna_power,
                 )
             with col_g2:
                 global_rx_sensitivity = st.slider(
                     "Rx Sensitivity Global (dBm) :",
                     min_value=-100.0, max_value=0.0, step=0.5,
-                    key="global_rx"
+                    key="global_rx",
+                    on_change=_sync_global_antenna_power,
                 )
         
         st.markdown("---")
@@ -856,60 +870,6 @@ def page_accueil():
                     else:
                         st.error(f"❌ Erreur lors de la suppression")
     
-    st.markdown("---")
-    
-    # Section Lancer le Scan
-    st.subheader("▶️ Lancer un Scan RFID")
-
-    col_scan1, col_scan2 = st.columns([2, 1])
-    
-    with col_scan1:
-        if not st.session_state.current_preset:
-            st.warning("⚠️ Charge d'abord un preset dans la section 'Charger un Preset'")
-        else:
-            cfg = charger_preset(st.session_state.current_preset)
-            if cfg:
-                st.info(f"✅ Preset actif: **{st.session_state.current_preset}**")
-                
-                # Afficher la configuration
-                col_meta1, col_meta2, col_meta3, col_meta4 = st.columns(4)
-                with col_meta1:
-                    st.metric("IP", cfg["ip"])
-                with col_meta2:
-                    st.metric("Port", cfg["port"])
-                with col_meta3:
-                    st.metric("Antennes", ",".join(str(a) for a in cfg["antennas"]))
-                with col_meta4:
-                    st.metric("Durée", f"{cfg['duration']}s" if cfg['duration'] > 0 else "∞")
-                pass
-    
-    with col_scan2:
-        if st.session_state.current_preset:
-            cfg = charger_preset(st.session_state.current_preset)
-            if cfg:
-                scan_status = _get_scan_status()
-                active = scan_status in {"starting", "running", "stopping"}
-                if st.button(
-                    "🚀 Demarrer",
-                    type="primary",
-                    use_container_width=True,
-                    key="btn_start_scan",
-                    disabled=active,
-                ):
-                    if _start_scan(cfg, "Scan termine avec succes"):
-                        st.success("✅ Scan lancé en arrière-plan")
-                        st.rerun()
-                if st.button(
-                    "⏹ Arreter le scan",
-                    use_container_width=True,
-                    key="btn_stop_scan",
-                    disabled=not active,
-                ):
-                    if _stop_scan():
-                        st.info("Arrêt du scan demandé.")
-                        st.rerun()
-                    else:
-                        st.warning("Aucun scan actif à arrêter.")
 
 
 # ────────────────────────────────────────────────────────────────────

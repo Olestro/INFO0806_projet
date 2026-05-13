@@ -55,6 +55,13 @@ python -m venv .venv
 pip install streamlit pandas sllurp
 ```
 
+La deuxième consiste à créer un environnement virtuel et à installer toutes les dépendances automatiquement via le fichier “requirements.txt” :
+```bash
+python -m venv .venv 
+.venv\Scripts\activate 
+pip install -r requirements.txt
+```
+
 Si vous disposez d’un fichier de dépendances, vous pouvez aussi l’utiliser à la place.
 
 ## Lancement de l’application

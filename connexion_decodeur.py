@@ -455,8 +455,15 @@ def run_inventory(ip: str, port: int, timeout: float, antennas: list[int],
 
 	try:
 		client.connect()
+		start_time = time.monotonic()
 		while not disconnected.is_set():
 			if stop_event is not None and stop_event.is_set():
+				try:
+					client.disconnect()
+				except Exception:
+					pass
+				break
+			if duration > 0 and (time.monotonic() - start_time) >= duration:
 				try:
 					client.disconnect()
 				except Exception:
