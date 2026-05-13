@@ -24,6 +24,7 @@ L’objectif est de :
 - Gestion d’une whitelist d’EPC.
 - Analyse et affichage des tags lus sous forme de tableau.
 - Interface Streamlit pour piloter l’ensemble depuis un navigateur.
+- Vous trouverez le fichier streamlit_min_test.py qui permet de tester la connexion avec le lecteur impinj d'une façon minimal.
 
 ## Architecture
 
