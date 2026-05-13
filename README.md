@@ -29,8 +29,8 @@ L’objectif est de :
 
 Le projet est composé de deux parties principales :
 
-- [streamlit_app.py](c:\Users\Mathieu\Documents\cours\INFO0806_projet\streamlit_app.py) : interface web Streamlit, gestion des scans, logs, whitelist et affichage des données.
-- [connexion_decodeur.py](c:\Users\Mathieu\Documents\cours\INFO0806_projet\connexion_decodeur.py) : logique de connexion au lecteur RFID et lancement des inventaires via LLRP.
+- streamlit_app.py : interface web Streamlit, gestion des scans, logs, whitelist et affichage des données.
+- connexion_decodeur.py : logique de connexion au lecteur RFID et lancement des inventaires via LLRP.
 
 ## Prérequis
 
