@@ -95,10 +95,9 @@ Le projet utilise plusieurs fichiers JSON et fichiers de sortie :
 - config.json : configuration générale.
 - presets.json : presets de connexion et de scan.
 - whitelist.json : EPC autorisés et éventuelles correspondances avec des noms.
-- tags_course.json : tags lus et historisés.
-- tags_course8.json et variantes : jeux de données de course.
-- rfid_terminal_live.log : log courant.
-- rfid_terminal_archive.log : archive des logs.
+- tags.json : tags lus et historisés.
+- rfid_terminal_live.log : log courant à afficher dans le mode brut.
+- rfid_terminal_archive.log : archive des logs du mode brut.
 
 ## Principe de fonctionnement
 L’utilisateur configure le lecteur RFID et choisit les antennes à utiliser.
@@ -110,9 +109,6 @@ Les données peuvent ensuite être analysées pour étudier l’effet des antenn
 ## Notes
 Le projet est conçu autour d’un lecteur RFID Impinj R220.
 Les scans sont gérés de manière à pouvoir être arrêtés proprement.
-Chaque session utilisateur possède un identifiant unique pour éviter les conflits entre instances.
 
 Neo KRZANOWSKI
 Mathieu STEPHAN
-
-Projet réalisé dans le cadre d’INFO0806.
