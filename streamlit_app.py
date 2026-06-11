@@ -12,7 +12,7 @@ from contextlib import redirect_stdout, redirect_stderr
 import connexion_decodeur
 from connexion_decodeur import (
     load_json, save_json, valider_parametres, sauvegarder_preset,
-    charger_preset, supprimer_preset, lister_presets, parse_antennas,
+    charger_preset, supprimer_preset, parse_antennas,
     DEFAULT_IP, DEFAULT_PORT, DEFAULT_TIMEOUT, DEFAULT_ANTENNAS,
     run_inventory,
 )
@@ -33,8 +33,7 @@ st.set_page_config(
 # ────────────────────────────────────────────────────────────────────
 
 SCRIPT_DIR = Path(__file__).parent
-BOOTSTRAP_PRESETS_FILE = SCRIPT_DIR / "presets.json"
-PRESETS_FILE = BOOTSTRAP_PRESETS_FILE
+PRESETS_FILE = SCRIPT_DIR / "presets.json"
 TAGS_FILE = SCRIPT_DIR / "tags.json"
 BASE_CONFIG_FILE = SCRIPT_DIR / "config.json"
 CONFIG_FILE = BASE_CONFIG_FILE
@@ -49,7 +48,7 @@ _SCAN_LOCK = threading.Lock()
 # ────────────────────────────────────────────────────────────────────
 
 def normalize_epc(value: str) -> str:
-    """Normalise un EPC pour comparaison robuste."""
+    """Normalise un EPC pour comparaison faire une comparaison insensible à la casse."""
     return str(value).strip().lower()
 
 
@@ -66,6 +65,8 @@ def load_whitelist_entries() -> list[dict[str, str]]:
     entries: list[dict[str, str]] = []
     seen: set[str] = set()
 
+    # Le fichier de whitelist peut être dans différents formats:
+    # 1) {"entries": [{"epc": "...", "name": "..." 
     if isinstance(raw, dict):
         candidates = raw.get("entries")
         if candidates is None:
@@ -77,7 +78,7 @@ def load_whitelist_entries() -> list[dict[str, str]]:
     else:
         candidates = []
         mapping = {}
-
+    # 2) Une liste brute d'EPC: ["epc1", "epc2", ...]
     if isinstance(candidates, list):
         for item in candidates:
             if isinstance(item, dict):
@@ -89,7 +90,7 @@ def load_whitelist_entries() -> list[dict[str, str]]:
             if epc and epc not in seen:
                 entries.append({"epc": epc, "name": name})
                 seen.add(epc)
-
+    # 3) Un mapping EPC -> nom: {"mapping": {"epc1": "name1", "epc2": "name2", ...}}
     if isinstance(mapping, dict):
         for raw_epc, raw_name in mapping.items():
             epc = normalize_epc(raw_epc)
@@ -150,7 +151,7 @@ def get_epc_name(epc: str, correspondence: dict[str, str] | None = None) -> str:
 
 
 def format_epc_label(epc: str, correspondence: dict[str, str] | None = None) -> str:
-    """Construit un label lisible Nom / EPC."""
+    """Construit un label lisible Nom / EPC pour l'affichage sur l'interface"""
     name = get_epc_name(epc, correspondence)
     if name:
         return f"{name} | {epc}"
@@ -169,7 +170,7 @@ def filter_tags_with_whitelist(raw_tags: list[dict], whitelist_epcs: list[str]) 
 
 
 def append_terminal_log(message: str) -> None:
-    """Ajoute des lignes au log live et a l'archive avec timestamp."""
+    """Ajoute des lignes au log live et a l'archive avec le timestamp local de l'appareil."""
     LIVE_LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
     lines = message.splitlines() or [""]
     with open(LIVE_LOG_FILE, "a", encoding="utf-8") as live_f, open(ARCHIVE_LOG_FILE, "a", encoding="utf-8") as archive_f:
@@ -181,12 +182,13 @@ def append_terminal_log(message: str) -> None:
 
 
 class TerminalLogStream:
-    """Flux texte compatible stdout/stderr qui ecrit dans le log en continu."""
+    """Classe qui va permettre de rediriger stdout/stderr vers le log du terminal dans Streamlit."""
 
     def __init__(self) -> None:
         self._buffer = ""
 
     def write(self, text: str) -> int:
+        """Ecrit du texte dans le log du terminal. Le texte est bufferisé jusqu'à ce qu'un saut de ligne soit rencontré."""
         if not text:
             return 0
 
@@ -198,13 +200,16 @@ class TerminalLogStream:
         return len(text)
 
     def flush(self) -> None:
+        """Vide le buffer restant dans le log du terminal."""
         if self._buffer:
             append_terminal_log(self._buffer)
             self._buffer = ""
 
 
 def read_terminal_log(max_lines: int = 400, source: str = "live", newest_first: bool = False) -> str:
-    """Lit les dernieres lignes du log terminal live ou archive."""
+    """Lit les dernieres lignes du log terminal live ou archive et retourne max_lines lignes. 
+    Si newest_first est True, les lignes sont retournées dans l'ordre du plus récent au plus ancien.
+    """
     log_file = LIVE_LOG_FILE if source == "live" else ARCHIVE_LOG_FILE
     if not log_file.exists():
         return ""
@@ -229,7 +234,7 @@ def format_terminal_log_for_display(content: str) -> str:
 
 
 def _render_mode_brut_terminal_content(max_lines: int, source: str) -> None:
-    """Affiche uniquement le contenu du terminal brut."""
+    """Affiche uniquement le contenu du terminal brut et stylise l'affichage du terminal."""
     logs = read_terminal_log(max_lines=max_lines, source=source, newest_first=True)
     if not logs:
         logs = "Aucune sortie disponible. Lance un scan pour remplir le terminal."
@@ -249,6 +254,7 @@ def _render_mode_brut_terminal_content(max_lines: int, source: str) -> None:
 
 
 def _init_scan_state() -> None:
+    """Initialise les variables de session pour la gestion du scan."""
     if "scan_thread" not in st.session_state:
         st.session_state.scan_thread = None
     if "scan_stop_event" not in st.session_state:
@@ -258,6 +264,7 @@ def _init_scan_state() -> None:
 
 
 def _parse_record_datetime(value) -> datetime | None:
+    """Parse une valeur de date/heure provenant d'un record de tag. Accepte les timestamps numériques, les chaînes ISO8601, ou les objets datetime."""
     if isinstance(value, datetime):
         return value
     if value is None:
@@ -284,6 +291,9 @@ def _parse_record_datetime(value) -> datetime | None:
 
 
 def _load_tags_payload(uploaded_file=None) -> list[dict]:
+    """"Charge les tags depuis un fichier JSON uploadé ou depuis le fichier de tags par défaut. 
+    Accepte les formats avec une clé "tags" ou une liste brute de tags.
+    """
     if uploaded_file is not None:
         try:
             payload = json.loads(uploaded_file.getvalue().decode("utf-8"))
@@ -310,11 +320,16 @@ def _load_tags_payload(uploaded_file=None) -> list[dict]:
 
 def _build_classic_tag_table(
     raw_tags: list[dict],
-    debounce_seconds: int,
+    debounce_minutes: int,
     correspondence: dict[str, str] | None = None,
 ) -> pd.DataFrame:
+    """Construit une table de tags avec les colonnes: Coureur, Tag ID, Nb lectures, Premiere visualisation, Derniere visualisation, Antenne, RSSI max.
+    Pour l'affichage du tableau dans la page graphique.
+    debounce_minutes correspond à la durée minimale entre 2 lectures d'un même tag pour qu'elles soient comptabilisées comme des lectures distinctes.
+    """
     rows: dict[str, dict] = {}
     default_time = datetime.min
+    debounce_seconds = max(0, int(debounce_minutes * 60))
 
     def sort_key(record: dict) -> datetime:
         return (
@@ -379,6 +394,7 @@ def _build_classic_tag_table(
         )
 
     data = []
+    # On trie les tags par date de dernière visualisation (du plus récent au plus ancien) pour l'affichage dans le tableau
     for row in rows.values():
         data.append({
             "Coureur": row["runner_name"],
@@ -396,16 +412,13 @@ def _build_classic_tag_table(
     return df.reset_index(drop=True)
 
 
-def _render_classic_tag_table(raw_tags: list[dict], debounce_minutes: int) -> pd.DataFrame:
-    debounce_seconds = max(0, int(debounce_minutes * 60))
-    return _build_classic_tag_table(raw_tags, debounce_seconds, load_epc_correspondence())
-
-
 def _scan_worker(
     cfg: dict,
     stop_event: threading.Event,
     completion_message: str,
 ) -> None:
+    """Fonction qui tourne dans un thread séparé pour exécuter le scan RFID sans bloquer l'interface Streamlit."""
+    # met l'état du scan à "running" une fois que le thread est bien lancé, pour éviter les conditions de course avec le bouton Démarrer/Arrêter
     with _SCAN_LOCK:
         _SCAN_STATE["status"] = "running"
 
@@ -416,6 +429,9 @@ def _scan_worker(
     terminal_stream = TerminalLogStream()
     try:
         with redirect_stdout(terminal_stream), redirect_stderr(terminal_stream):
+            # Le terminal_stream va rediriger les prints et les erreurs vers le log du terminal dans Streamlit
+            # run_inventory est une fonction bloquante qui tourne tant que le scan est actif ou que la durée n'est pas écoulée. 
+            # Et s'arrête si stop_event est déclenché pour s'arrêter proprement.
             result = run_inventory(
                 cfg["ip"],
                 cfg["port"],
@@ -428,6 +444,8 @@ def _scan_worker(
             )
         terminal_stream.flush()
 
+        # A la fin du scan, si le code de résultat est 0 (succès) et que le stop_event n'est pas déclenché (arrêt manuel), 
+        # on affiche le message de complétion. Si le code de résultat est différent de 0, on affiche une erreur.
         if result == 0 and not stop_event.is_set():
             append_terminal_log(completion_message)
         elif result != 0:
@@ -440,6 +458,9 @@ def _scan_worker(
 
 
 def _start_scan(cfg: dict, completion_message: str) -> bool:
+    """
+    Démarre le thread de scan si aucun scan n'est en cours. Retourne True si le scan a été démarré, False sinon.
+    """
     thread = st.session_state.scan_thread
     if thread is not None and thread.is_alive():
         return False
@@ -453,6 +474,7 @@ def _start_scan(cfg: dict, completion_message: str) -> bool:
     st.session_state.scan_stop_event = stop_event
     st.session_state.scan_thread = thread
     st.session_state.scan_status = "starting"
+    # On met l'état du scan à "starting" avant de lancer le thread pour éviter les conditions de course avec le bouton Démarrer/Arrêter qui vérifie l'état du scan.
     with _SCAN_LOCK:
         _SCAN_STATE["status"] = "starting"
     thread.start()
@@ -460,9 +482,13 @@ def _start_scan(cfg: dict, completion_message: str) -> bool:
 
 
 def _stop_scan() -> bool:
+    """
+    Arrête le thread de scan s'il est en cours d'exécution. 
+    Retourne True si une demande d'arrêt a été envoyée, False si aucun scan n'était actif.
+    """
     stop_event = st.session_state.scan_stop_event
     thread = st.session_state.scan_thread
-
+    # Si aucun thread de scan n'est actif, on retourne False pour indiquer qu'aucune action d'arrêt n'a été nécessaire.
     if thread is None or not thread.is_alive():
         st.session_state.scan_status = "idle"
         with _SCAN_LOCK:
@@ -488,19 +514,6 @@ def _get_scan_status() -> str:
     st.session_state.scan_status = shared_status
     return shared_status
 
-
-def _render_scan_status_badge(status: str) -> None:
-    """Affiche un badge de statut pour le scan courant."""
-    if status == "running":
-        st.success("✅ Scan en cours")
-    elif status == "starting":
-        st.info("⏳ Lancement du scan...")
-    elif status == "stopping":
-        st.warning("⏹️ Arrêt demandé")
-    else:
-        st.info("⏸️ Aucun scan détecté")
-
-
 def _sync_global_antenna_power() -> None:
     """Applique les valeurs globales Tx/Rx a toutes les antennes configurees."""
     try:
@@ -514,6 +527,10 @@ def _sync_global_antenna_power() -> None:
 
 
 def _normalize_json_filename(value: str, default_name: str) -> str:
+    """
+    Normalise un nom de fichier JSON en s'assurant qu'il a l'extension .json et en extrayant 
+    uniquement le nom de fichier sans chemin. Si la valeur est vide ou invalide, retourne le nom par défaut.
+    """
     name = str(value or "").strip()
     if not name:
         return default_name
@@ -524,6 +541,14 @@ def _normalize_json_filename(value: str, default_name: str) -> str:
 
 
 def _load_presets_root(path: Path) -> dict:
+    """
+    Charge le contenu brut du fichier de presets et retourne un dictionnaire avec une clé "presets" contenant les presets. 
+     - Si le fichier contient déjà une clé "presets" avec un dictionnaire, elle est utilisée telle quelle.
+     - Si le fichier contient un dictionnaire sans la clé "presets", ce dictionnaire est encapsulé dans une nouvelle clé "presets".
+     - Si le fichier ne contient pas de dictionnaire, un dictionnaire vide est utilisé pour les presets.
+     - En cas d'erreur de lecture ou de format, un dictionnaire avec des presets vides est retourné.
+     Cette fonction garantit que le résultat a toujours la structure attendue pour les presets, quel que soit le format initial du fichier.
+    """
     raw = load_json(path)
     if isinstance(raw, dict) and isinstance(raw.get("presets"), dict):
         root = dict(raw)
@@ -535,11 +560,6 @@ def _load_presets_root(path: Path) -> dict:
     if not isinstance(root.get("presets"), dict):
         root["presets"] = {}
     return root
-
-
-def _get_presets_map(path: Path) -> dict:
-    return _load_presets_root(path).get("presets", {})
-
 
 def _load_storage_preferences_from_presets(preset_name: str | None = None) -> dict[str, str]:
     """Lit les prefs depuis presets.json.
@@ -553,16 +573,20 @@ def _load_storage_preferences_from_presets(preset_name: str | None = None) -> di
 
 
 def _save_storage_preferences_to_presets(presets_name: str, tags_name: str, config_name: str) -> None:
+    """
+    Persiste les chemins de stockage dans le preset actif et dans le fichier bootstrap pour que les 
+    autres presets puissent y accéder.
+    """
     prefs = {
         "presets_filename": presets_name,
         "tags_filename": tags_name,
         "config_filename": config_name,
     }
-    # 1) Bootstrapping: pointeur vers le fichier presets actif (sans dupliquer storage_preferences)
+    # 1) Bootstrapping: pointeur vers le fichier presets actif dans presets.json
     try:
-        bootstrap_root = _load_presets_root(BOOTSTRAP_PRESETS_FILE)
+        bootstrap_root = _load_presets_root(PRESETS_FILE)
         bootstrap_root["active_presets_filename"] = presets_name
-        save_json(BOOTSTRAP_PRESETS_FILE, bootstrap_root)
+        save_json(PRESETS_FILE, bootstrap_root)
     except Exception:
         pass
 
@@ -578,18 +602,23 @@ def _save_storage_preferences_to_presets(presets_name: str, tags_name: str, conf
 def _save_active_presets_filename(name: str) -> None:
     """Persiste le nom du fichier presets actif dans le fichier bootstrap."""
     try:
-        bootstrap_root = _load_presets_root(BOOTSTRAP_PRESETS_FILE)
+        bootstrap_root = _load_presets_root(PRESETS_FILE)
         bootstrap_root["active_presets_filename"] = name
-        save_json(BOOTSTRAP_PRESETS_FILE, bootstrap_root)
+        save_json(PRESETS_FILE, bootstrap_root)
     except Exception:
         pass
 
 
 def _apply_storage_paths() -> None:
+    """
+    Applique les chemins de stockage configurés dans les variables de session à la configuration 
+    globale utilisée par le module connexion_decodeur.    
+    """
     global PRESETS_FILE, TAGS_FILE, CONFIG_FILE
     PRESETS_FILE = SCRIPT_DIR / st.session_state.presets_filename
     TAGS_FILE = SCRIPT_DIR / st.session_state.tags_filename
     CONFIG_FILE = SCRIPT_DIR / st.session_state.config_filename
+    # Répercute les changements dans le module de connexion/décodage pour que les fonctions utilisent les bons fichiers
     connexion_decodeur.PRESETS_FILE = PRESETS_FILE
     connexion_decodeur.TAGS_FILE = TAGS_FILE
     connexion_decodeur.CONFIG_FILE = CONFIG_FILE
@@ -600,12 +629,14 @@ def _apply_storage_paths() -> None:
 # Initialisation Session State
 # ────────────────────────────────────────────────────────────────────
 
-# 1) Bootstrapping: on lit les préférences globales depuis presets.json (fixe)
-bootstrap_root = _load_presets_root(BOOTSTRAP_PRESETS_FILE)
+# 1) Bootstrapping: on lit les préférences globales depuis presets.json 
+# pour déterminer le fichier de presets actif et les chemins de stockage associés avant de faire quoi que ce soit d'autre.
+bootstrap_root = _load_presets_root(PRESETS_FILE)
 active_presets_filename = None
 if isinstance(bootstrap_root, dict):
     active_presets_filename = bootstrap_root.get("active_presets_filename")
 
+# on charge ensuite les préférences de stockage depuis le preset actif (s'il existe) pour initialiser les variables de session
 if "current_preset" not in st.session_state:
     st.session_state.current_preset = None
 if "tags_data" not in st.session_state:
@@ -629,7 +660,7 @@ if "use_whitelist" not in st.session_state:
 if "presets_filename" not in st.session_state:
     st.session_state.presets_filename = _normalize_json_filename(
         active_presets_filename,
-        BOOTSTRAP_PRESETS_FILE.name,
+        PRESETS_FILE.name,
     )
 
 # 2) Important: met à jour PRESETS_FILE/connexion_decodeur.PRESETS_FILE avant de lire last_used_preset
@@ -650,15 +681,21 @@ if "tags_filename" not in st.session_state:
         TAGS_FILE.name,
     )
 if "config_filename" not in st.session_state:
+    # Le fichier de config est optionnel, si le preset n'en définit pas, on continue d'utiliser le config.json par défaut
     st.session_state.config_filename = _normalize_json_filename(
         storage_prefs.get("config_filename"),
         CONFIG_FILE.name,
     )
 if "presets_filename_input" not in st.session_state:
+    # Le champ de saisie du nom de fichier presets dans l'interface doit être initialisé avec le nom du fichier presets actif, 
+    # qui peut provenir du preset à charger automatiquement
     st.session_state.presets_filename_input = st.session_state.presets_filename
 if "tags_filename_input" not in st.session_state:
+    # Le champ de saisie du nom de fichier tags dans l'interface doit être initialisé avec le nom du fichier tags actif,
+    # qui peut provenir du preset à charger automatiquement
     st.session_state.tags_filename_input = st.session_state.tags_filename
 if "config_filename_input" not in st.session_state:
+    # Meme chose pour le champ de saisie du nom de fichier config dans l'interface
     st.session_state.config_filename_input = st.session_state.config_filename
 _init_scan_state()
 _apply_storage_paths()
@@ -742,6 +779,10 @@ def page_accueil():
                     col_a1, col_a2 = st.columns(2)
                     
                     with col_a1:
+                        # Ce sont les valeurs globales qui sont utilisées par défaut pour chaque antenne, 
+                        # mais si l'utilisateur a déjà modifié les sliders individuels, 
+                        # on garde ces valeurs personnalisées en mémoire dans session_state pour ne pas les écraser 
+                        # lorsqu'on change les valeurs globales.
                         tx_key = f"ant_{ant}_tx"
                         tx_value = global_tx_power if tx_key not in st.session_state else st.session_state[tx_key]
                         tx = st.slider(
@@ -753,6 +794,8 @@ def page_accueil():
                             key=tx_key,
                         )
                     with col_a2:
+                        # Même logique pour le Rx que pour le Tx, on utilise la valeur globale par défaut mais on conserve 
+                        # les personnalisations individuelles en mémoire.
                         rx_key = f"ant_{ant}_rx"
                         rx_value = global_rx_sensitivity if rx_key not in st.session_state else st.session_state[rx_key]
                         rx = st.slider(
@@ -793,7 +836,7 @@ def page_accueil():
                 if "load_feedback" in st.session_state:
                     st.success(st.session_state.pop("load_feedback"))
                 
-                # Afficher les détails
+                # Afficher les détails du preset sélectionné dans un expander
                 if preset_name in presets:
                     cfg = presets[preset_name]
                     with st.expander("📊 Détails", expanded=False):
@@ -877,7 +920,8 @@ def page_accueil():
 # ────────────────────────────────────────────────────────────────────
 
 def page_mode_classique():
-    """Page d'affichage du tableau des tags en mode classique."""
+    """Page d'affichage du tableau des tags en mode classique,
+    on pourra afficher la lecture de tags en live ou en chargeant un fichier json de tags."""
     st.title("🚴 Mode Classique")
     st.markdown("---")
     st.caption("Les lectures rapprochées sont regroupées selon une fenêtre de non-relecture configurable.")
@@ -891,6 +935,9 @@ def page_mode_classique():
         st.warning("Whitelist vide: aucun tag ne sera affiche en mode classique.")
     elif not whitelist_enabled:
         st.info("Whitelist ignoree: tous les tags lus sont pris en compte sur cette page.")
+
+# Le debounce sert à regrouper les lectures rapprochées d'un même tag pour n'afficher qu'une seule
+#  ligne par tag dans le tableau,
 
     if "classique_debounce_minutes" not in st.session_state:
         st.session_state.classique_debounce_minutes = 10
@@ -939,8 +986,8 @@ def page_mode_classique():
                 st.rerun()
 
         scan_status = _get_scan_status()
-        # _render_scan_status_badge(scan_status)
 
+        # Affiche les infos du presets pour rappeler à l'utilisateur les paramètres du scan en cours, et propose de démarrer/arrêter le scan.
         if st.session_state.current_preset:
             cfg = charger_preset(st.session_state.current_preset)
             if cfg:
@@ -983,7 +1030,7 @@ def page_mode_classique():
             raw_tags = _load_tags_payload()
             if whitelist_enabled:
                 raw_tags = filter_tags_with_whitelist(raw_tags, whitelist_epcs)
-            df_live = _render_classic_tag_table(raw_tags, debounce_minutes)
+            df_live = _build_classic_tag_table(raw_tags, debounce_minutes, load_epc_correspondence())
             st.session_state.classique_last_raw_tags = raw_tags
             st.session_state.classique_last_df_live = df_live
         except ValueError as exc:
@@ -993,6 +1040,8 @@ def page_mode_classique():
             df_live = st.session_state.classique_last_df_live
             st.caption(f"Lecture en cours (fichier en ecriture): {exc}")
 
+        #actualise automatiquement pendant un scan actif, pour afficher les lectures au fur et à mesure qu'elles arrivent dans le fichier, 
+        # en respectant l'intervalle de rafraîchissement configuré.
         if st.session_state.classique_auto_refresh and scan_status in {"starting", "running", "stopping"}:
             time.sleep(refresh_interval)
             st.rerun()
@@ -1015,7 +1064,8 @@ def page_mode_classique():
                 st.info("Aucune lecture disponible pour le moment.")
         else:
             st.dataframe(df_live, use_container_width=True, hide_index=True)
-
+    # sous onglet d'import, on peut charger un fichier JSON de tags pour afficher les lectures agrégées dans le même format que la vue live, 
+    # en respectant la même logique de regroupement par fenêtre de non-relecture et de filtrage par whitelist.
     with tab_import:
         st.subheader("Import JSON")
         st.caption("Charge un fichier JSON brut contenant la clé 'tags' ou une liste de lectures de tags.")
@@ -1029,7 +1079,7 @@ def page_mode_classique():
             raw_tags_import = _load_tags_payload(uploaded_file)
             if whitelist_enabled:
                 raw_tags_import = filter_tags_with_whitelist(raw_tags_import, whitelist_epcs)
-            df_import = _render_classic_tag_table(raw_tags_import, debounce_minutes)
+            df_import = _build_classic_tag_table(raw_tags_import, debounce_minutes, load_epc_correspondence())
         except ValueError as exc:
             st.error(str(exc))
             raw_tags_import = []
@@ -1056,7 +1106,10 @@ def page_mode_classique():
 # ────────────────────────────────────────────────────────────────────
 
 def page_configuration():
-    """Page de configuration de l'application."""
+    """Page de configuration de l'application,
+    où l'on va pouvoir définir les noms des fichiers de stockage local, et aussi effacer les données de presets ou de tags si besoin 
+    pour repartir sur une configuration propre.
+    """
     st.title("⚙️ Configuration")
     st.markdown("---")
 
@@ -1132,7 +1185,9 @@ def page_configuration():
 # ────────────────────────────────────────────────────────────────────
 
 def page_mode_brut():
-    """Page pour voir un terminal brut des logs et interactions."""
+    """Page pour voir un terminal brut des logs et interactions,
+    avec la possibilité de configurer l'intervalle d'actualisation et 
+    de voir l'affichage en directe ou des logs enregistrés dans l'archive."""
     st.title("💻 Mode Brut")
     st.markdown("---")
     st.info("Affiche la sortie brute capturée pendant les scans (style terminal).")
@@ -1157,6 +1212,8 @@ def page_mode_brut():
         if not st.session_state.current_preset:
             st.warning("⚠️ Charge d'abord un preset dans la section 'Charger un Preset'")
         else:
+            # Affiche les infos du preset actif pour rappeler à l'utilisateur les paramètres du scan en cours,
+            # et propose de démarrer/arrêter le scan.
             cfg = charger_preset(st.session_state.current_preset)
             if cfg:
                 st.info(f"✅ Preset actif: **{st.session_state.current_preset}**")
@@ -1180,6 +1237,7 @@ def page_mode_brut():
                     st.info("⏸️ Aucun scan détecté pour le moment.")
 
     with col_scan2:
+        # Boutons de contrôle du scan: démarrer/arrêter. 
         if st.session_state.current_preset:
             cfg = charger_preset(st.session_state.current_preset)
             if cfg:
@@ -1209,6 +1267,8 @@ def page_mode_brut():
 
     st.markdown("---")
 
+# Paramètres d'affichage du terminal brut: nombre de lignes à afficher, source (live ou archive), 
+# bouton pour effacer le terminal live (en gardant l'archive intacte), et bouton de rafraîchissement manuel.
     col1, col2, col3 = st.columns([1, 1, 2])
     with col1:
         max_lines = st.selectbox("Dernieres lignes", [100, 200, 400, 800], index=2)
@@ -1225,6 +1285,10 @@ def page_mode_brut():
 
     refresh_interval = None if not auto_refresh else f"{refresh_ms / 1000:.3f}s"
 
+# Le fragment render_mode_brut_terminal est réexécuté à chaque fois que refresh_interval change, 
+# soit à chaque fois que l'utilisateur modifie l'intervalle d'actualisation ou active/désactive
+# l'actualisation automatique, soit lorsqu'il clique sur le bouton de rafraîchissement manuel. 
+# Cela permet de mettre à jour le terminal avec les dernières lignes du log
     @st.fragment(run_every=refresh_interval)
     def render_mode_brut_terminal() -> None:
         _render_mode_brut_terminal_content(max_lines, source)
@@ -1236,7 +1300,17 @@ def page_mode_brut():
 # ────────────────────────────────────────────────────────────────
 
 def page_mode_graphique():
-    """Page pour visualiser les tags en temps réel avec graphiques."""
+    """Page pour visualiser les tags en temps réel avec graphiques,
+    on pourra selectionner un fichier json contenant les tags avec la restriction ou non de a withelist et
+    effectuer un filtre sur :
+    - L'antenne
+    - Le tags EPC ou coureur
+    - par passage, RSSI moyen, écart moyen, dernière détection ou EPC
+    - ordre croissant ou décroissant
+    On peut y définir un cooldown avant relecture du tags.
+    Cela affichera des graphiques de flux de tags dans le temps, des statistiques sur les tags les plus lus,
+    on pourras également faie un focus sur un tag en particulier pour afficher des graphiques sur celui-ci
+    """
     st.title("📊 Mode Graphique")
     st.markdown("---")
     st.info("Affiche les tags detectes avec statistiques de flux, graphiques et tri des resultats traites.")
@@ -1278,7 +1352,8 @@ def page_mode_graphique():
     if not tags_list:
         st.warning("Aucune donnee exploitable de tags dans ce fichier JSON.")
         return
-
+    # Applique la whitelist si activée, et affiche un message d'avertissement si la whitelist est vide 
+    # pour expliquer que cela peut entraîner l'absence de données affichées.
     whitelist_epcs = load_whitelist()
     correspondence = load_epc_correspondence()
     if whitelist_enabled and not whitelist_epcs:
@@ -1297,7 +1372,8 @@ def page_mode_graphique():
     if ts_col not in df.columns:
         st.error("Aucun champ timestamp/client_timestamp detecte dans les donnees tags.")
         return
-
+    
+    # Prépare les données: normalisation des EPC, mapping vers les coureurs, formatage des labels, conversion des types, etc.
     df["timestamp_dt"] = pd.to_datetime(df[ts_col], errors="coerce")
     df["epc"] = df.get("epc", "").astype(str).str.strip()
     df = df[df["epc"] != ""].copy()
@@ -1357,7 +1433,7 @@ def page_mode_graphique():
         filtered = filtered[filtered["tag_label"].isin(epc_filter)]
     filtered_count = len(filtered)
 
-    # Cooldown anti-surlecture: ignore les lectures trop proches pour un meme EPC.
+    # Cooldown anti-surlecture: ignore les lectures trop proches pour un meme EPC
     st.subheader("Parametres RF et Cooldown")
     with st.container():
         cooldown_min = st.slider(
@@ -1427,20 +1503,24 @@ def page_mode_graphique():
         )
     )
 
+    # Formatage des labels pour affichage
     processed["tag_label"] = processed.apply(
         lambda row: format_epc_label(row["epc"], correspondence),
         axis=1,
     )
-
+    # Calcul de la durée de présence pour chaque EPC
     processed["duree_presence_s"] = (
         processed["derniere_detection"] - processed["premiere_detection"]
     ).dt.total_seconds().fillna(0)
 
+    # Calcul de la vitesse de passages par minute pour chaque EPC, en évitant la division par zéro.
     processed["vitesse_passages_min"] = processed.apply(
         lambda row: (row["passages"] / max(row["duree_presence_s"], 1.0)) * 60.0,
         axis=1,
     )
 
+    # Tri selon les critères sélectionnés, en utilisant une map pour faire le lien entre les options de tri 
+    # et les colonnes du DataFrame.
     sort_map = {
         "Passages": "passages",
         "RSSI moyen": "rssi_moyen",
@@ -1448,6 +1528,9 @@ def page_mode_graphique():
         "Derniere detection": "derniere_detection",
         "EPC": "epc",
     }
+
+    # Par défaut, les EPC sans RSSI ou sans écart moyen sont placés en bas du classement, 
+    # que ce soit en ordre croissant ou décroissant.
     processed = processed.sort_values(
         by=sort_map[sort_by],
         ascending=(sort_order == "Croissant"),
@@ -1532,6 +1615,8 @@ def page_mode_graphique():
         inplace=True,
     )
     tracked_display["Horodatage"] = tracked_display["Horodatage"].astype(str).str.replace(":", "h", n=1)
+
+    # Affiche les lectures individuelles pour le tag suivi, avec horodatage, antenne, RSSI et passages.
     st.dataframe(tracked_display, use_container_width=True, hide_index=True)
 
 
@@ -1540,7 +1625,12 @@ def page_mode_graphique():
 # ────────────────────────────────────────────────────────────────
 
 def page_whitelist():
-    """Page de gestion des EPC autorises (whitelist)."""
+    """Page de gestion des EPC autorises (whitelist).
+        Permet d'ajouter ou de supprimer des EPC de la whitelist, soit un par un via un formulaire, soit en important une liste d'EPC depuis un fichier JSON, 
+        soit en sélectionnant des EPC déjà présents dans la whitelist pour les supprimer. Affiche aussi le contenu actuel de la whitelist et permet de l'exporter au format JSON.
+        Les graphiques de la page Mode Graphique ne retiennent que les tags dont l'EPC est présent dans whitelist.json, 
+        à moins que l'utilisateur choisisse d'ignorer la whitelist pour les visualisations.
+    """
     st.title("✅ Gestion Whitelist")
     st.markdown("---")
     st.info("Les graphiques ne retiennent que les tags dont l'EPC est present dans whitelist.json.")
@@ -1549,6 +1639,8 @@ def page_whitelist():
     else:
         st.caption("Etat global: whitelist ignoree sur les pages de visualisation.")
 
+    # Affiche le nombre d'EPC actuellement autorises dans la whitelist, 
+    # et propose d'ajouter ou de supprimer des EPC via un formulaire ou une selection.
     whitelist_entries = load_whitelist_entries()
     whitelist_epcs = [entry["epc"] for entry in whitelist_entries]
     st.metric("EPC autorises", len(whitelist_entries))
@@ -1582,6 +1674,9 @@ def page_whitelist():
                 st.success("Whitelist mise a jour.")
                 st.rerun()
 
+        # Permet d'importer une liste d'EPC depuis un fichier JSON, soit au format {"entries": [...]}, soit une liste brute d'EPC,
+        # en fusionnant avec les EPC deja presents dans la whitelist (sans dupliquer les EPC,
+        # et en mettant a jour les noms associes si un EPC existe deja mais que le fichier importé en propose un nouveau).
         uploaded = st.file_uploader("Importer whitelist JSON", type=["json"])
         if uploaded is not None:
             try:
@@ -1616,6 +1711,8 @@ def page_whitelist():
                 st.error(f"Import impossible: {exc}")
 
     with col_remove:
+        # Affiche une liste des EPC actuellement dans la whitelist avec leurs noms associes, 
+        # et permet de selectionner plusieurs EPC pour les supprimer d'un coup.
         st.subheader("Supprimer des EPC")
         if whitelist_entries:
             labels = [format_epc_label(entry["epc"], {entry["epc"]: entry.get("name", "")}) for entry in whitelist_entries]
@@ -1650,9 +1747,6 @@ def page_whitelist():
         file_name="whitelist.json",
         mime="application/json",
     )
-
-
-
 
 
 # ────────────────────────────────────────────────────────────────────
@@ -1702,6 +1796,7 @@ def main():
                 _apply_storage_paths()
                 _save_active_presets_filename(st.session_state.presets_filename)
 
+            # Parametres de scan par defaut
             st.session_state.current_preset = preset_to_apply
             st.session_state.main_ip = cfg.get("ip", DEFAULT_IP)
             st.session_state.main_port = cfg.get("port", DEFAULT_PORT)

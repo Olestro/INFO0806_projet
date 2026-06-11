@@ -70,33 +70,12 @@ def save_json(path: Path, data: dict) -> None:
 
 
 # =====================================================================
-#  Format presets.json (rétro-compat)
+#  Format presets.json 
 # =====================================================================
 
-def _normalize_presets_root(raw: object) -> dict:
-	"""Normalise le contenu de presets.json.
-
-	Formats supportés:
-	- Ancien: {"nom": {..preset..}, ...}
-	- Nouveau: {"presets": {"nom": {..}}, "last_used_preset": "nom", "active_presets_filename": "..."}
-	"""
-	if isinstance(raw, dict):
-		if isinstance(raw.get("presets"), dict):
-			root = dict(raw)
-		else:
-			root = {"presets": dict(raw)}
-	else:
-		root = {"presets": {}}
-
-	presets = root.get("presets")
-	if not isinstance(presets, dict):
-		root["presets"] = {}
-	return root
-
-
 def get_presets_root() -> dict:
-	"""Retourne le JSON complet de presets.json dans le format normalisé."""
-	return _normalize_presets_root(load_json(PRESETS_FILE))
+	"""Retourne le JSON complet de presets.json"""
+	return load_json(PRESETS_FILE)
 
 
 def get_presets() -> dict:
@@ -105,12 +84,14 @@ def get_presets() -> dict:
 
 
 def get_last_used_preset() -> Optional[str]:
+	"""Retourne le nom du dernier preset utilisé, ou None si aucun ou invalide."""
 	root = get_presets_root()
 	value = root.get("last_used_preset")
 	return value if isinstance(value, str) and value.strip() else None
 
 
 def set_last_used_preset(name: Optional[str]) -> None:
+	"""Enregistre le nom du dernier preset utilisé (ou None pour réinitialiser)."""
 	root = get_presets_root()
 	if name is None or not str(name).strip():
 		root["last_used_preset"] = None
@@ -120,9 +101,7 @@ def set_last_used_preset(name: Optional[str]) -> None:
 
 
 def get_storage_preferences(preset_name: Optional[str] = None) -> dict[str, str]:
-	"""Retourne les préférences de stockage.
-
-	Uniquement depuis le preset demandé.
+	"""Retourne les préférences concernant le nom des fichiers de stockage de configuration selon un preset donné.
 	"""
 	if not preset_name:
 		return {}
@@ -140,7 +119,7 @@ def get_storage_preferences(preset_name: Optional[str] = None) -> dict[str, str]
 
 
 def update_preset_storage_preferences(preset_name: str, prefs: dict[str, str]) -> bool:
-	"""Met à jour uniquement storage_preferences d'un preset existant.
+	"""Met à jour les préférences de nom de fichiers de stockage de configuration d'un preset existant.
 
 	Retourne False si le preset n'existe pas.
 	"""
@@ -161,7 +140,7 @@ def update_preset_storage_preferences(preset_name: str, prefs: dict[str, str]) -
 # =====================================================================
 
 def parse_antennas(value: str) -> list[int]:
-	"""Parse une liste d'antennes au format '1,2,3'."""
+	"""Parse une liste d'antennes au format '1,2,3'. et retourne une liste."""
 	params = [part.strip() for part in value.split(",") if part.strip()]
 	if not params:
 		raise argparse.ArgumentTypeError("Aucune antenne fournie.")
@@ -268,8 +247,6 @@ def sauvegarder_preset(name: str, ip: str, port: int, timeout: float,
 			"tags_filename": str(storage_preferences.get("tags_filename", "")).strip(),
 			"config_filename": str(storage_preferences.get("config_filename", "")).strip(),
 		}
-		# Nettoyage legacy pour éviter le doublon
-		root.pop("storage_preferences", None)
 
 	presets[name] = preset_data
 	if set_as_last:
@@ -279,7 +256,7 @@ def sauvegarder_preset(name: str, ip: str, port: int, timeout: float,
 
 
 def charger_preset(name: str) -> Optional[dict]:
-	"""Charge un preset depuis presets.json. Retourne None si introuvable."""
+	"""Charge un preset. Retourne None si introuvable."""
 	root = get_presets_root()
 	presets = root["presets"]
 	if name not in presets:
@@ -344,6 +321,7 @@ def enregistrer_tag(epc: str, rssi, ant_id: int, seen: int, reader_timestamp=Non
 # =====================================================================
 
 def extract_epc(tag: dict) -> str:
+	"""Extrait l'EPC d'un tag."""
 	if "EPC-96" in tag:
 		return str(tag["EPC-96"])
 	epc_data = tag.get("EPCData")
@@ -355,6 +333,7 @@ def extract_epc(tag: dict) -> str:
 
 
 def on_tag_report(_reader, tags, antennas, affiche_antennes=False):
+	"""Traite les tags reçus du lecteur. Affiche les informations et les stocke dans un fichier JSON."""
 	if isinstance(tags, dict):
 		tags = [tags]
 	if not isinstance(tags, list):
@@ -492,7 +471,7 @@ def run_inventory(ip: str, port: int, timeout: float, antennas: list[int],
 # =====================================================================
 
 def _add_scan_args(parser: argparse.ArgumentParser) -> None:
-	"""Ajoute les arguments communs de scan à un parser."""
+	"""Ajoute les arguments de scan au parser."""
 	parser.add_argument("--ip", default=DEFAULT_IP, help="Adresse IPv4 du lecteur")
 	parser.add_argument("--port", type=int, default=DEFAULT_PORT, help="Port TCP (LLRP: 5084)")
 	parser.add_argument("--timeout", type=float, default=DEFAULT_TIMEOUT,
@@ -506,17 +485,18 @@ def _add_scan_args(parser: argparse.ArgumentParser) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
+	"""Construit le parser d'arguments pour le CLI."""
 	parser = argparse.ArgumentParser(
 		description="Lecteur RFID Impinj R220 – inventaire LLRP avec gestion de presets.")
 	subparsers = parser.add_subparsers(dest="command")
 
-	# ── scan ──────────────────────────────────────────────────────────
+	# scan
 	scan_p = subparsers.add_parser("scan", help="Lancer l'ecoute RFID")
 	_add_scan_args(scan_p)
 	scan_p.add_argument("--preset", type=str, default=None,
 	                    help="Charger un preset avant le scan")
 
-	# ── preset ────────────────────────────────────────────────────────
+	# preset 
 	preset_p = subparsers.add_parser("preset", help="Gestion des presets")
 	preset_sub = preset_p.add_subparsers(dest="preset_action")
 
@@ -584,7 +564,7 @@ def main() -> int:
 		return 1
 
 	# --- Commande : scan (ou par défaut) --------------------------
-	# Si aucune commande → scan par défaut
+	# Si aucune commande -> scan par défaut
 	if args.command is None:
 		args = parser.parse_args(["scan"])
 
