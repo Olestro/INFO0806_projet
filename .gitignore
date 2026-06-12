@@ -2,12 +2,10 @@
 .vscode/
 config.json
 tags.json
-_pycache__
-
+__pycache__
 rfid_terminal_archive.log
 rfid_terminal_live.log
 *.docx
-FONCTIONNALITES.txt
 INFO0806_Projet_RFID_KRZANOWSKI_STEPHAN.*
 KRZANOWSKI_STEPHAN_Sujet11
 KRZANOWSKI_STEPHAN_Sujet11.*
