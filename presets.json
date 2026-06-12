@@ -24,6 +24,39 @@
       },
       "storage_preferences": {
         "presets_filename": "presets.json",
+        "tags_filename": "tags_test.json",
+        "config_filename": "config.json"
+      }
+    },
+    "test_2": {
+      "ip": "10.42.0.15",
+      "port": 5084,
+      "timeout": 4.9,
+      "antennas": [
+        1,
+        2,
+        3
+      ],
+      "duration": 1,
+      "afficher_antennes": false,
+      "global_tx_power": 31.5,
+      "global_rx_sensitivity": -80.0,
+      "antenna_params": {
+        "1": {
+          "tx_power": 31.5,
+          "rx_sensitivity": -80.0
+        },
+        "2": {
+          "tx_power": 31.5,
+          "rx_sensitivity": -80.0
+        },
+        "3": {
+          "tx_power": 31.5,
+          "rx_sensitivity": -80.0
+        }
+      },
+      "storage_preferences": {
+        "presets_filename": "presets.json",
         "tags_filename": "tags.json",
         "config_filename": "config.json"
       }
